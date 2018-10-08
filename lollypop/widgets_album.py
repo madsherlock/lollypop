@@ -320,15 +320,15 @@ class AlbumWidget(AlbumBaseWidget):
         if self._artwork is None or\
                 (album_id is not None and album_id != self._album.id):
             return
-        surface = App().art.get_album_artwork(
-            self._album,
-            self._art_size,
-            self._artwork.get_scale_factor())
-        self._artwork.set_from_surface(surface)
-        if surface.get_height() > surface.get_width():
-            self._overlay_orientation = Gtk.Orientation.VERTICAL
+        if App().task_helper.high_load:
+            GLib.idle_add(self.set_artwork, album_id)
         else:
-            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
+            App().task_helper.run(
+                              App().art.get_album_artwork_pixbuf,
+                              self._album,
+                              self._art_size,
+                              self._artwork.get_scale_factor(),
+                              callback=(self._on_get_album_artwork_pixbuf,))
 
     def set_selection(self):
         """
@@ -362,6 +362,25 @@ class AlbumWidget(AlbumBaseWidget):
 #######################
     def _on_album_updated(self, scanner, album_id, destroy):
         pass
+
+    def _on_get_album_artwork_pixbuf(self, pixbuf):
+        """
+            Set pixbuf as surface
+            @param pixbuf as Gdk.Pixbuf
+        """
+        if pixbuf is not None:
+            surface = Gdk.cairo_surface_create_from_pixbuf(
+                    pixbuf, self._artwork.get_scale_factor(), None)
+        else:
+            surface = App().art.get_album_artwork(
+                   self._album,
+                   self._art_size,
+                   self._artwork.get_scale_factor())
+        self._artwork.set_from_surface(surface)
+        if surface.get_height() > surface.get_width():
+            self._overlay_orientation = Gtk.Orientation.VERTICAL
+        else:
+            self._overlay_orientation = Gtk.Orientation.HORIZONTAL
 
 #######################
 # PRIVATE             #

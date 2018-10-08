@@ -98,7 +98,6 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         self.set_selection()
         self._widget.set_property("halign", Gtk.Align.CENTER)
         self._widget.set_property("valign", Gtk.Align.CENTER)
-        self.show_all()
         self._widget.connect("enter-notify-event", self._on_enter_notify)
         self._widget.connect("leave-notify-event", self._on_leave_notify)
         self._widget.connect("button-press-event", self.__on_button_press)
@@ -225,6 +224,14 @@ class AlbumSimpleWidget(Gtk.FlowBoxChild, AlbumWidget):
         """
         if self._album.id == album_id and destroy:
             self.destroy()
+
+    def _on_get_album_artwork_pixbuf(self, pixbuf):
+        """
+            Show widget
+            @param pixbuf as Gdk.Pixbuf
+        """
+        AlbumWidget._on_get_album_artwork_pixbuf(self, pixbuf)
+        self.show_all()
 
 #######################
 # PRIVATE             #

@@ -249,11 +249,12 @@ class LazyLoadingView(View):
 #######################
 # PRIVATE             #
 #######################
-    def __lazy_loading(self, widgets=[], scroll_value=0):
+    def __lazy_loading(self, widgets=[], scroll_value=0, loop=0):
         """
             Load the view in a lazy way
             @param widgets as [Gtk.Widget]
             @param scroll_value as float
+            @internal loop as int
         """
         widget = None
         if self._lazy_queue is None or self._scroll_value != scroll_value:
@@ -266,10 +267,11 @@ class LazyLoadingView(View):
             widget = self._lazy_queue.pop(0)
         if widget is not None:
             widget.populate()
+            # If scrolling, slow down loading
             if widgets:
-                GLib.timeout_add(10, self.lazy_loading, widgets, scroll_value)
-            else:
                 GLib.idle_add(self.lazy_loading, widgets, scroll_value)
+            else:
+                self.lazy_loading(widgets, scroll_value)
 
     def __is_visible(self, widget):
         """

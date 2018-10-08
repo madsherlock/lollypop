@@ -15,6 +15,7 @@ gi.require_version("Soup", "2.4")
 from gi.repository import GLib, Soup
 
 from threading import Thread
+from multiprocessing import cpu_count
 
 from lollypop.logger import Logger
 
@@ -22,14 +23,17 @@ from lollypop.logger import Logger
 class TaskHelper:
     """
         Simple helper for running a task in background
+        Only use a global object for intensive tasks
     """
 
     def __init__(self):
         """
             Init helper
         """
-        self.__signals = {}
         self.__headers = []
+        self.__thread_count = 0
+        # Do not flood all cores
+        self.__cpu_count = int(cpu_count()/2)
 
     def add_header(self, name, value):
         """
@@ -46,6 +50,7 @@ class TaskHelper:
             @param *args as command arguments
             @param **kwd as { "callback": (function, *args) }
         """
+        self.__thread_count += 1
         thread = Thread(target=self.__run,
                         args=(command, kwd, *args))
         thread.daemon = True
@@ -107,6 +112,22 @@ class TaskHelper:
             Logger.error("TaskHelper::load_uri_content_sync(): %s" % e)
             return (False, b"")
 
+    @property
+    def thread_count(self):
+        """
+            Running thread count
+            @return int
+        """
+        return self.__thread_count
+
+    @property
+    def high_load(self):
+        """
+            True if many threads running
+            @return bool
+        """
+        return self.__thread_count > self.__cpu_count
+
 #######################
 # PRIVATE             #
 #######################
@@ -125,6 +146,7 @@ class TaskHelper:
                     GLib.idle_add(callback, result, *callback_args)
         except Exception as e:
             Logger.error("TaskHelper::__run(): %s" % e)
+        self.__thread_count -= 1
 
     def __on_read_bytes_async(self, stream, result, content,
                               cancellable, callback, uri, *args):

@@ -53,6 +53,7 @@ from lollypop.database_tracks import TracksDatabase
 from lollypop.notification import NotificationManager
 from lollypop.playlists import Playlists
 from lollypop.objects import Album, Track
+from lollypop.helper_task import TaskHelper
 from lollypop.collectionscanner import CollectionScanner
 
 
@@ -177,6 +178,7 @@ class Application(Gtk.Application):
         self.scanner = CollectionScanner()
         self.art = Art()
         self.notify = NotificationManager()
+        self.task_helper = TaskHelper()
         self.art.update_art_size()
         if self.settings.get_value("artist-artwork"):
             GLib.timeout_add(5000, self.art.cache_artists_info)
