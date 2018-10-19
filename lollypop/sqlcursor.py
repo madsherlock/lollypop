@@ -25,6 +25,8 @@ class SqlCursor:
         """
             Add cursor to thread list
         """
+        App().locked += 1
+        print("global lock on:  ", App().locked)
         obj.thread_lock.acquire()
         name = current_thread().getName() + obj.__class__.__name__
         App().cursors[name] = obj.get_cursor()
@@ -38,6 +40,8 @@ class SqlCursor:
             App().cursors[name].commit()
             App().cursors[name].close()
             del App().cursors[name]
+        App().locked -= 1
+        print("global lock off: ", App().locked)
         obj.thread_lock.release()
 
     def commit(obj):
@@ -53,8 +57,10 @@ class SqlCursor:
         """
         name = current_thread().getName() + obj.__class__.__name__
         if name in App().cursors.keys() and len(App().cursors.keys()) > 1:
+            App().locked -= 1
             obj.thread_lock.release()
             sleep(0.01)
+            App().locked += 1
             obj.thread_lock.acquire()
 
     def __init__(self, obj):
@@ -72,6 +78,8 @@ class SqlCursor:
         if name not in App().cursors.keys():
             self.__creator = True
             App().cursors[name] = self.__obj.get_cursor()
+            App().locked += 1
+            print("lock on:  ", App().locked)
             self.__obj.thread_lock.acquire()
         return App().cursors[name]
 
@@ -85,4 +93,6 @@ class SqlCursor:
                 App().cursors[name].commit()
                 App().cursors[name].close()
                 del App().cursors[name]
+            App().locked -= 1
+            print("lock off: ", App().locked)
             self.__obj.thread_lock.release()

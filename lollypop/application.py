@@ -70,6 +70,7 @@ class Application(Gtk.Application):
             Create application
             @param version as str
         """
+        self.locked = 0
         Gtk.Application.__init__(
             self,
             application_id="org.gnome.Lollypop",
