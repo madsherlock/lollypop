@@ -261,12 +261,6 @@ class AlbumRow(Gtk.ListBoxRow, TracksView, AlbumArtHelper):
 #######################
 # PROTECTED           #
 #######################
-    def _on_populated(self):
-        """
-            Populate remaining discs
-        """
-        if len(self.discs) > 0:
-            TracksView.populate(self)
 
 #######################
 # PRIVATE             #
