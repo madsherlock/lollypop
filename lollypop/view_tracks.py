@@ -61,7 +61,8 @@ class TracksView:
         if self._responsive_type in [ResponsiveType.DND,
                                      ResponsiveType.LIST,
                                      ResponsiveType.SEARCH]:
-            self._album = Album(self._album.id)
+            album = Album(self._album.id)
+            album.set_tracks(self._album.tracks)
             self._album.merge_discs()
 
         # Discs to load, will be emptied
