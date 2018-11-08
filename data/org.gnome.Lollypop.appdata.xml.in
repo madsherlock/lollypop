@@ -27,12 +27,11 @@
     </ul>
   </description>
   <releases>
-    <release version="0.9.610" date="2018-10-28">
+    <release version="0.9.612" date="2018-11-08">
       <description>
         <ul>
-	  <li>Fix broken MTP sync on GNOME 3.30</li>
-	  <li>Fix a crash about album discs</li>
-	  <li>Fix broken radio view</li>
+	  <li>Fix an issue with kid3-cli/li>
+	  <li>Fix an issue with lyrics/li>
         </ul>
       </description>
     </release>
