@@ -30,8 +30,8 @@
     <release version="0.9.612" date="2018-11-08">
       <description>
         <ul>
-	  <li>Fix an issue with kid3-cli/li>
-	  <li>Fix an issue with lyrics/li>
+	  <li>Fix an issue with kid3-cli</li>
+	  <li>Fix an issue with lyrics</li>
         </ul>
       </description>
     </release>
