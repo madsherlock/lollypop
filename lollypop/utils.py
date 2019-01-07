@@ -21,6 +21,34 @@ from lollypop.logger import Logger
 from lollypop.define import App, Type, SelectionListMask
 
 
+def get_mtime_for_uri(uri):
+    """
+        Get changed time/modification time for uri
+        @param uri as str
+        @return float
+    """
+    f = Gio.File.new_for_uri(uri)
+    # We do not use time::modified because many tag editors
+    # just preserve this setting
+    try:
+        try:
+            info = f.query_info("time::changed",
+                                Gio.FileQueryInfoFlags.NONE,
+                                None)
+            mtime = int(info.get_attribute_as_string(
+                "time::changed"))
+        # Fallback for remote fs
+        except:
+            info = f.query_info("time::modified",
+                                Gio.FileQueryInfoFlags.NONE,
+                                None)
+            mtime = int(info.get_attribute_as_string(
+                "time::modified"))
+    except:
+        mtime = 0
+    return mtime
+
+
 def get_round_surface(image, scale_factor):
     """
         Get rounded surface from pixbuf

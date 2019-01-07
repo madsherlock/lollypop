@@ -23,7 +23,7 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.tagreader import TagReader
 from lollypop.logger import Logger
 from lollypop.database_history import History
-from lollypop.utils import is_audio, is_pls
+from lollypop.utils import is_audio, is_pls, get_mtime_for_uri
 
 
 class CollectionScanner(GObject.GObject, TagReader):
@@ -200,22 +200,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                     SqlCursor.remove(App().db)
                     return
                 try:
+                    mtime = get_mtime_for_uri(uri)
                     GLib.idle_add(self.__update_progress, i, count)
-                    f = Gio.File.new_for_uri(uri)
-                    # We do not use time::modified because many tag editors
-                    # just preserve this setting
-                    try:
-                        info = f.query_info("time::changed",
-                                            Gio.FileQueryInfoFlags.NONE,
-                                            None)
-                        mtime = int(info.get_attribute_as_string(
-                            "time::changed"))
-                    except:  # Fallback for remote fs
-                        info = f.query_info("time::modified",
-                                            Gio.FileQueryInfoFlags.NONE,
-                                            None)
-                        mtime = int(info.get_attribute_as_string(
-                            "time::modified"))
                     # If songs exists and mtime unchanged, continue,
                     # else rescan
                     if uri in orig_tracks:
@@ -230,10 +216,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                     # If not saved, use 0 as mtime, easy delete on quit
                     if not saved:
                         mtime = 0
-                    # On first scan, use modification time
-                    # Else, use current time
-                    elif not was_empty:
-                        mtime = int(time())
                     to_add.append((mtime, uri))
                 except Exception as e:
                     Logger.error("CollectionScanner::__scan(mtime): %s" % e)
