@@ -234,7 +234,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     # Else, use current time
                     elif not was_empty:
                         mtime = int(time())
-                    to_add.append((uri, mtime))
+                    to_add.append((mtime, uri))
                 except Exception as e:
                     Logger.error("CollectionScanner::__scan(mtime): %s" % e)
             if to_add or orig_tracks:
@@ -249,7 +249,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                     self.__del_from_db(uri)
                     SqlCursor.allow_thread_execution(App().db)
             # Add files to db
-            for (uri, mtime) in to_add:
+            # We want newer tracks first
+            to_add.sort(reverse=True)
+            for (mtime, uri) in to_add:
                 try:
                     Logger.debug("Adding file: %s" % uri)
                     i += 1
