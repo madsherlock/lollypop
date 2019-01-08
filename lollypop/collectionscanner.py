@@ -100,9 +100,8 @@ class CollectionScanner(GObject.GObject, TagReader):
             @param uris as string
             @return (track uri as [str], track dirs as [str])
         """
-        tracks = []
         files = []
-        track_dirs = []
+        dirs = []
         walk_uris = list(uris)
         while walk_uris:
             uri = walk_uris.pop(0)
@@ -114,7 +113,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                     Gio.FileQueryInfoFlags.NONE,
                     None)
                 if info.get_file_type() == Gio.FileType.DIRECTORY:
-                    track_dirs.append(uri)
+                    dirs.append(uri)
                     infos = f.enumerate_children(
                         "standard::name,standard::type,standard::is-hidden",
                         Gio.FileQueryInfoFlags.NONE,
@@ -125,7 +124,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                         if info.get_is_hidden():
                             continue
                         elif info.get_file_type() == Gio.FileType.DIRECTORY:
-                            track_dirs.append(child_uri)
+                            dirs.append(child_uri)
                             walk_uris.append(child_uri)
                         else:
                             files.append(f)
@@ -134,19 +133,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             except Exception as e:
                 Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
                              % e)
-        for f in files:
-            try:
-                if is_pls(f):
-                    App().playlists.import_tracks(f)
-                elif is_audio(f):
-                    tracks.append(f.get_uri())
-                else:
-                    Logger.debug("%s not detected as a music file" %
-                                 f.get_uri())
-            except Exception as e:
-                Logger.error("CollectionScanner::__get_objects_for_uris(): %s"
-                             % e)
-        return (tracks, track_dirs)
+        return (files, dirs)
 
     def __update_progress(self, current, total):
         """
@@ -179,11 +166,11 @@ class CollectionScanner(GObject.GObject, TagReader):
         if self.__history is None:
             self.__history = History()
         mtimes = App().tracks.get_mtimes()
-        (new_tracks, new_dirs) = self.__get_objects_for_uris(uris)
+        (new_files, new_dirs) = self.__get_objects_for_uris(uris)
         orig_tracks = App().tracks.get_uris()
         was_empty = len(orig_tracks) == 0
 
-        count = len(new_tracks) + len(orig_tracks)
+        count = len(new_files) + len(orig_tracks)
         # Add monitors on dirs
         if self.__inotify is not None:
             for d in new_dirs:
@@ -195,28 +182,19 @@ class CollectionScanner(GObject.GObject, TagReader):
         SqlCursor.add(App().db)
         try:
             to_add = []
-            for uri in new_tracks:
+            for f in new_files:
                 if self.__thread is None:
                     SqlCursor.remove(App().db)
                     return
                 try:
-                    mtime = get_mtime_for_uri(uri)
+                    uri = f.get_uri()
+                    mtime = self.__check_file_for_scan(f, orig_tracks, i)
+                    if mtime is not None:
+                        # If not saved, use 0 as mtime, easy delete on quit
+                        if not saved:
+                            mtime = 0
+                        to_add.append((mtime, uri))
                     GLib.idle_add(self.__update_progress, i, count)
-                    # If songs exists and mtime unchanged, continue,
-                    # else rescan
-                    if uri in orig_tracks:
-                        orig_tracks.remove(uri)
-                        i += 1
-                        if not saved or mtime <= mtimes.get(uri, mtime + 1):
-                            i += 1
-                            continue
-                        else:
-                            SqlCursor.allow_thread_execution(App().db)
-                            self.__del_from_db(uri)
-                    # If not saved, use 0 as mtime, easy delete on quit
-                    if not saved:
-                        mtime = 0
-                    to_add.append((mtime, uri))
                 except Exception as e:
                     Logger.error("CollectionScanner::__scan(mtime): %s" % e)
             if to_add or orig_tracks:
@@ -252,6 +230,36 @@ class CollectionScanner(GObject.GObject, TagReader):
             self.__play_new_tracks(new_tracks)
         del self.__history
         self.__history = None
+
+    def __check_file_for_scan(self, f, orig_tracks, i):
+        """
+            Check if URI is scannable
+            @param f as Gio.File
+            @param orig_tracks as [str]
+            @param i as int
+            @return mtime as int/None
+        """
+        mtime = get_mtime_for_uri(f)
+        uri = f.get_uri()
+        # If songs exists and mtime unchanged, not scannable
+        if uri in orig_tracks:
+            orig_tracks.remove(uri)
+            i += 1
+            if not saved or mtime <= mtimes.get(uri, mtime + 1):
+                i += 1
+                return None
+            # else scannable
+            else:
+                SqlCursor.allow_thread_execution(App().db)
+                self.__del_from_db(uri)
+        if is_pls(f):
+            App().playlists.import_tracks(f)
+            return None
+        elif is_audio(f):
+            return mtime
+        else:
+            Logger.debug("%s not detected as a music file" % f.get_uri())
+            return None
 
     def __add2db(self, uri, mtime):
         """

@@ -21,13 +21,12 @@ from lollypop.logger import Logger
 from lollypop.define import App, Type, SelectionListMask
 
 
-def get_mtime_for_uri(uri):
+def get_mtime_for_uri(f):
     """
-        Get changed time/modification time for uri
-        @param uri as str
+        Get changed time/modification time for file
+        @param f as Gio.File
         @return float
     """
-    f = Gio.File.new_for_uri(uri)
     # We do not use time::modified because many tag editors
     # just preserve this setting
     try:
