@@ -154,6 +154,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         files = []
         dirs = []
         walk_uris = list(uris)
+        max_mtime = App().albums.get_max_mtime()
         while walk_uris:
             uri = walk_uris.pop(0)
             try:
@@ -162,6 +163,7 @@ class CollectionScanner(GObject.GObject, TagReader):
                 info = f.query_info(SCAN_QUERY_INFO,
                                     Gio.FileQueryInfoFlags.NONE,
                                     None)
+                dir_mtime = get_mtime(info)
                 if info.get_file_type() == Gio.FileType.DIRECTORY:
                     dirs.append(uri)
                     infos = f.enumerate_children(SCAN_QUERY_INFO,
@@ -175,10 +177,10 @@ class CollectionScanner(GObject.GObject, TagReader):
                         elif info.get_file_type() == Gio.FileType.DIRECTORY:
                             dirs.append(child_uri)
                             walk_uris.append(child_uri)
-                        else:
+                        elif dir_mtime > max_mtime:
                             mtime = get_mtime(info)
                             files.append((mtime, child_uri))
-                else:
+                elif dir_mtime > max_mtime:
                     mtime = get_mtime(info)
                     files.append((mtime, uri))
             except Exception as e:

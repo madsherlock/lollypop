@@ -1031,6 +1031,18 @@ class AlbumsDatabase:
                 sql.execute("DELETE FROM albums WHERE rowid=?", (album_id,))
             return ret
 
+    def get_max_mtime(self):
+        """
+            Get maximal mtime for albums
+            @return mtime as int
+        """
+        with SqlCursor(App().db) as sql:
+            result = sql.execute("SELECT MAX(mtime) FROM albums")
+            result = result.fetchone()
+            if result is not None:
+                return result[0]
+            return 0
+
     @property
     def max_count(self):
         """
