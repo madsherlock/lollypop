@@ -418,28 +418,13 @@ class ViewsContainer:
             Reload navigation view
         """
         App().window.emit("show-can-go-back", True)
-        state_two_ids = App().settings.get_value("state-two-ids")
         state_one_ids = App().settings.get_value("state-one-ids")
-        # We do not support genres in navigation mode
-        if App().settings.get_value("show-genres") and\
-                state_one_ids and state_one_ids[0] >= 0 and not state_two_ids:
-            state_one_ids = []
-        # Artist id with genre off or genre and artist id
-        elif (state_two_ids and not state_one_ids) or\
-                (state_one_ids and state_one_ids[0] >= 0 and state_two_ids):
-            state_one_ids = state_two_ids
-            state_two_ids = []
         # Be sure to have an initial artist view
         if self._rounded_artists_view is None:
             self._rounded_artists_view = self._get_view_artists_rounded(True)
             self._stack.set_visible_child(self._rounded_artists_view)
-        if state_one_ids and state_two_ids:
-            self.show_view(state_one_ids[0], None, False)
-            self.show_view(state_one_ids[0], state_two_ids)
-        elif state_one_ids and state_one_ids[0] != Type.ARTISTS:
+        if state_one_ids and state_one_ids[0] != Type.ARTISTS:
             self.show_view(state_one_ids[0])
-        elif state_two_ids:
-            self.show_view(state_two_ids[0])
         else:
             App().window.emit("can-go-back-changed", False)
             self._stack.set_visible_child(self._rounded_artists_view)

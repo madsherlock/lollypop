@@ -35,9 +35,6 @@ class AppearanceSettingsWidget(Gtk.Bin):
         else:
             switch_view.set_state(App().settings.get_value("dark-ui"))
 
-        switch_genres = builder.get_object("switch_genres")
-        switch_genres.set_state(App().settings.get_value("show-genres"))
-
         switch_compilations = builder.get_object("switch_compilations")
         switch_compilations_in_album_view = builder.get_object(
             "switch_compilations_in_album_view")
@@ -143,16 +140,6 @@ class AppearanceSettingsWidget(Gtk.Bin):
         if not App().player.is_party:
             settings = Gtk.Settings.get_default()
             settings.set_property("gtk-application-prefer-dark-theme", state)
-
-    def _on_switch_genres_state_set(self, widget, state):
-        """
-            Update show genre setting
-            @param widget as Gtk.Switch
-            @param state as bool
-        """
-        App().settings.set_value("show-genres",
-                                 GLib.Variant("b", state))
-        App().window.container.show_genres(state)
 
 #######################
 # PRIVATE             #

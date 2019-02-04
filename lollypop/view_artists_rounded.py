@@ -109,8 +109,6 @@ class RoundedArtistsView(FlowBoxView):
             self._add_items(self._items)
         App().settings.set_value("state-one-ids",
                                  GLib.Variant("ai", [Type.ARTISTS]))
-        App().settings.set_value("state-two-ids",
-                                 GLib.Variant("ai", []))
 
 #######################
 # PRIVATE             #
