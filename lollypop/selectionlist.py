@@ -56,13 +56,12 @@ class SelectionList(BaseView, Gtk.Overlay):
         self.__model.set_sort_func(0, self.__sort_items)
         self.__view = builder.get_object("view")
         self.__view.set_model(self.__model)
-        if base_type in [SelectionListMask.LIST_ONE,
-                         SelectionListMask.LIST_TWO]:
-            self.__view.get_style_context().add_class("sidebar")
+        self.__view.get_style_context().add_class("sidebar")
         self.__view.set_row_separator_func(self.__row_separator_func)
         self.__renderer0 = CellRendererArtist()
         self.__renderer0.set_property("ellipsize-set", True)
         self.__renderer0.set_property("ellipsize", Pango.EllipsizeMode.END)
+        self.__renderer0.set_is_artists(base_type & SelectionListMask.ARTISTS)
         self.__renderer1 = Gtk.CellRendererPixbuf()
         # 16px for Gtk.IconSize.MENU
         self.__renderer1.set_fixed_size(16, -1)
@@ -91,14 +90,6 @@ class SelectionList(BaseView, Gtk.Overlay):
 
         App().art.connect("artist-artwork-changed",
                           self.__on_artist_artwork_changed)
-
-    def mark_as(self, type):
-        """
-            Mark list as artists list
-            @param type as SelectionListMask
-        """
-        self.__mask = self.__base_type | type
-        self.__renderer0.set_is_artists(type & SelectionListMask.ARTISTS)
 
     def populate(self, values):
         """
@@ -239,7 +230,7 @@ class SelectionList(BaseView, Gtk.Overlay):
             @return items as [(int, str)]
         """
         lists = ShownLists.get(mask)
-        if mask & SelectionListMask.LIST_ONE and App().window.is_adaptive:
+        if App().window.is_adaptive:
             lists += [(Type.SEARCH, _("Search"), _("Search"))]
             lists += [
                 (Type.CURRENT, _("Current playlist"), _("Current playlist"))]
@@ -331,8 +322,7 @@ class SelectionList(BaseView, Gtk.Overlay):
             if state & Gdk.ModifierType.CONTROL_MASK or\
                state & Gdk.ModifierType.SHIFT_MASK:
                 self.__modifier = True
-        elif self.__base_type in [SelectionListMask.LIST_ONE,
-                                  SelectionListMask.LIST_TWO]:
+        else:
             info = view.get_dest_row_at_pos(event.x, event.y)
             if info is not None:
                 from lollypop.pop_menu_views import ViewsMenuPopover

@@ -41,7 +41,6 @@ class ScannerContainer:
         """
         if modifications:
             self.update_list_one(True)
-            self.update_list_two(True)
             from lollypop.app_notification import AppNotification
             notification = AppNotification(_("New tracks available"),
                                            [_("Refresh")],
@@ -76,18 +75,10 @@ class ScannerContainer:
         artist_name = App().artists.get_name(artist_id)
         sortname = App().artists.get_sortname(artist_id)
         if App().settings.get_value("show-sidebar"):
-            if App().settings.get_value("show-genres"):
-                l = self._list_two
-                artist_ids = App().artists.get_ids(
-                    self._list_one.selected_ids)
-                if artist_id not in artist_ids:
-                    return
-            else:
-                l = self._list_one
             if add:
-                l.add_value((artist_id, artist_name, sortname))
+                self._list_one.add_value((artist_id, artist_name, sortname))
             else:
-                l.remove_value(artist_id)
+                self._list_one.remove_value(artist_id)
         elif self._rounded_artists_view is not None:
             if add:
                 self._rounded_artists_view.add_value((artist_id,

@@ -46,7 +46,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         self._stack = AdaptiveStack()
         self._stack.show()
         self.__setup_view()
-        self.add(self.__paned_one)
+        self.add(self.__paned)
 
     def stop_all(self):
         """
@@ -65,7 +65,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
             self._list_one.select_first()
             self._list_one.disconnect_by_func(select_list_one)
         if App().settings.get_value("show-sidebar"):
-            self._list_two.hide()
             self.update_list_one()
             self._list_one.connect("populated", select_list_one)
 
@@ -82,15 +81,10 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         """
             Save paned position
         """
-        main_pos = self.__paned_one.get_position()
-        listview_pos = self.__paned_two.get_position()
-        listview_pos = listview_pos if listview_pos > 100 else 100
+        position = self.__paned.get_position()
         App().settings.set_value("paned-mainlist-width",
                                  GLib.Variant("i",
-                                              main_pos))
-        App().settings.set_value("paned-listview-width",
-                                 GLib.Variant("i",
-                                              listview_pos))
+                                              position))
 
     def show_sidebar(self, show):
         """
@@ -124,7 +118,6 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
                 self._reload_list_view()
         elif not adaptive_window:
             if self._list_one.get_visible():
-                self._list_two.hide()
                 self._list_one.hide()
             for child in self._stack.get_children():
                 child.destroy()
@@ -154,14 +147,7 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
         """
             Get first paned (list_one)
         """
-        return self.__paned_one
-
-    @property
-    def paned_two(self):
-        """
-            Get second paned (list_two)
-        """
-        return self.__paned_two
+        return self.__paned
 
     @property
     def progress(self):
@@ -181,21 +167,14 @@ class Container(Gtk.Overlay, DeviceContainer, DonationContainer,
                 - artist list
                 - main view as artist view or album view
         """
-        self.__paned_one = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
-        self.__paned_two = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
-
+        self.__paned = Gtk.Paned.new(Gtk.Orientation.HORIZONTAL)
         self.__progress = ProgressBar()
         self.__progress.get_style_context().add_class("progress-bottom")
         self.__progress.set_property("valign", Gtk.Align.END)
         self.add_overlay(self.__progress)
 
-        self.__paned_two.add1(self._list_two)
-        self.__paned_two.add2(self._stack)
-        self.__paned_one.add1(self._list_one)
-        self.__paned_one.add2(self.__paned_two)
-        self.__paned_one.set_position(
+        self.__paned.add1(self._list_one)
+        self.__paned.add2(self._stack)
+        self.__paned.set_position(
             App().settings.get_value("paned-mainlist-width").get_int32())
-        self.__paned_two.set_position(
-            App().settings.get_value("paned-listview-width").get_int32())
-        self.__paned_one.show()
-        self.__paned_two.show()
+        self.__paned.show()

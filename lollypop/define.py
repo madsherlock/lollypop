@@ -69,14 +69,11 @@ class ScanType:
 
 
 class SelectionListMask:
-        LIST_ONE = 1 << 1
-        LIST_TWO = 1 << 2
-        LIST_DEVICE = 1 << 3
-        ARTISTS = 1 << 4
-        GENRE = 1 << 5
-        PLAYLISTS = 1 << 6
-        COMPILATIONS = 1 << 7
-        ALL_ARTISTS = 1 << 8
+        LIST_DEVICE = 1 << 1
+        ARTISTS = 1 << 2
+        PLAYLISTS = 1 << 3
+        COMPILATIONS = 1 << 4
+        ALL_ARTISTS = 1 << 5
 
 
 class Shuffle:

@@ -45,10 +45,7 @@ class ViewsMenuPopover(Popover):
                      Type.PLAYLISTS, Type.ARTISTS] and\
                 not App().settings.get_value("save-state"):
             startup_menu = Gio.Menu()
-            if self.__mask & SelectionListMask.LIST_TWO:
-                exists = rowid in App().settings.get_value("startup-two-ids")
-            else:
-                exists = rowid in App().settings.get_value("startup-one-ids")
+            exists = rowid in App().settings.get_value("startup-one-ids")
             action = Gio.SimpleAction.new_stateful(
                                            "default_selection_id",
                                            None,
@@ -116,14 +113,11 @@ class ViewsMenuPopover(Popover):
                     break
         else:
             self.__widget.remove_value(rowid)
-            if self.__mask & SelectionListMask.LIST_ONE:
-                ids = App().settings.get_value("startup-one-ids")
-                if rowid in ids:
-                    ids.remove(rowid)
-                App().settings.set_value("startup-one-ids",
-                                         GLib.Variant("ai", ids))
-                App().settings.set_value("startup-two-ids",
-                                         GLib.Variant("ai", []))
+            ids = App().settings.get_value("startup-one-ids")
+            if rowid in ids:
+                ids.remove(rowid)
+            App().settings.set_value("startup-one-ids",
+                                     GLib.Variant("ai", ids))
         self.popdown()
 
     def __on_default_change_state(self, action, variant, rowid):
@@ -133,22 +127,8 @@ class ViewsMenuPopover(Popover):
             @param variant as GVariant
             @param rowid as int
         """
-        if self.__mask & SelectionListMask.LIST_ONE:
-            if variant:
-                startup_one_ids = [rowid]
-                startup_two_ids = []
-            else:
-                startup_one_ids = startup_two_ids = []
-        elif self.__mask & SelectionListMask.LIST_TWO:
-            if variant:
-                startup_one_ids = None
-                startup_two_ids = [rowid]
-            else:
-                startup_one_ids = None
-                startup_two_ids = [rowid]
+        startup_one_ids = [rowid] if variant else []
         self.popdown()
         if startup_one_ids is not None:
             App().settings.set_value("startup-one-ids",
                                      GLib.Variant("ai", startup_one_ids))
-        App().settings.set_value("startup-two-ids",
-                                 GLib.Variant("ai", startup_two_ids))

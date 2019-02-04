@@ -294,7 +294,6 @@ class Window(Gtk.ApplicationWindow, AdaptiveWindow):
         self.__container = Container()
         self.set_stack(self.container.stack)
         self.add_paned(self.container.paned_one, self.container.list_one)
-        self.add_paned(self.container.paned_two, self.container.list_two)
         self.__container.show()
         self.__vgrid = Gtk.Grid()
         self.__vgrid.set_orientation(Gtk.Orientation.VERTICAL)

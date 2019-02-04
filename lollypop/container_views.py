@@ -183,11 +183,9 @@ class ViewsContainer:
         def get_items(artist_ids, compilation_ids):
             items = []
             if static:
-                mask = SelectionListMask.LIST_ONE |\
-                       SelectionListMask.ARTISTS |\
-                       SelectionListMask.ALL_ARTISTS
-                if compilation_ids:
-                    mask |= SelectionListMask.COMPILATIONS
+                mask = SelectionListMask.ARTISTS |\
+                       SelectionListMask.ALL_ARTISTS |\
+                       SelectionListMask.COMPILATIONS
                 items = ShownLists.get(mask)
                 for dev in self.devices.values():
                     items.append((dev.id, dev.name, dev.name))

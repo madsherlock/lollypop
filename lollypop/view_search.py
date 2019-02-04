@@ -162,10 +162,8 @@ class SearchView(BaseView, Gtk.Bin):
             Hide if in a popover and show playlist
         """
         if App().settings.get_value("show-sidebar"):
-            App().window.container.show_lists([Type.PLAYLISTS],
-                                              [playlist_id])
-        else:
-            App().window.container.show_view(Type.PLAYLISTS, [playlist_id])
+            App().window.container.list_one.select_ids([Type.PLAYLISTS])
+        App().window.container.show_view(Type.PLAYLISTS, [playlist_id])
         popover = self.get_ancestor(Gtk.Popover)
         if popover is not None:
             popover.hide()

@@ -104,7 +104,6 @@ class AppearanceSettingsWidget(Gtk.Bin):
                                  GLib.Variant("b", state))
         if App().settings.get_value("show-sidebar"):
             App().window.container.list_one.redraw()
-            App().window.container.list_two.redraw()
         else:
             from lollypop.view_artists_rounded import RoundedArtistsView
             for child in App().window.container.stack.get_children():

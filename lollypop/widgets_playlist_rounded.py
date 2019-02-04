@@ -229,12 +229,7 @@ class PlaylistRoundedWidget(RoundedAlbumsWidget, OverlayHelper):
             Open playlist
             @param button as Gtk.Button
         """
-        show_sidebar = App().settings.get_value("show-sidebar")
-        show_genres = App().settings.get_value("show-genres")
-        if show_sidebar and show_genres:
-            App().window.container.list_two.select_ids([self._data])
-        else:
-            App().window.container.show_view(Type.PLAYLISTS, [self._data])
+        App().window.container.show_view(Type.PLAYLISTS, [self._data])
         return True
 
     def __on_edit_clicked(self, button):
