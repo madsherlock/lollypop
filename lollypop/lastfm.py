@@ -67,6 +67,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             LibreFMNetwork.__init__(self)
             Logger.debug("LibreFMNetwork.__init__()")
         else:
+            print("lastfm")
             self.__goa = GoaSyncedAccount("Last.fm")
             self.__goa.connect("account-switched",
                                self.on_goa_account_switched)
@@ -76,6 +77,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
                 self.__API_KEY = auth.props.client_id
                 self.__API_SECRET = auth.props.client_secret
             else:
+                print("secret")
                 Logger.debug("LastFMNetwork.__init__(secret)")
                 self.__API_KEY = "7a9619a850ccf7377c46cf233c51e3c6"
                 self.__API_SECRET = "9254319364d73bec6c59ace485a95c98"
@@ -90,9 +92,11 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
             @param full_sync as bool
             @param callback as function
         """
+        print("connect", full_sync, callback, *args)
         if self.is_goa:
             App().task_helper.run(self.__connect, full_sync)
         elif Gio.NetworkMonitor.get_default().get_network_available():
+            print("connect network", full_sync, callback, *args)
             from lollypop.helper_passwords import PasswordsHelper
             helper = PasswordsHelper()
             helper.get(self.__name,
@@ -307,6 +311,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
                 self.api_secret = auth.props.client_secret
                 self.session_key = auth.call_get_access_token_sync(None)[0]
             else:
+                print("skg generator", len(self.__login), len(self.__password))
                 skg = SessionKeyGenerator(self)
                 self.session_key = skg.get_session_key(
                     username=self.__login,
@@ -409,11 +414,14 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
              @param full_sync as bool
              @param callback as function
         """
+        print("__on_get_password", attributes,
+              name, full_sync, callback, *args)
         if attributes is None:
             Logger.error("LastFM::__on_get_password(): no attributes")
             return
         self.__login = attributes["login"]
         self.__password = password
         if Gio.NetworkMonitor.get_default().get_network_available():
+            print("__on_get_password", "yes we can")
             App().task_helper.run(self.__connect, full_sync,
                                   callback=(callback, *args))
