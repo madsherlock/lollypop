@@ -387,19 +387,24 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
         """
             Populate loved tracks playlist
         """
+        print("__populate_loved_tracks")
         if not self.available:
             return
         try:
+            print("__populate_loved_tracks try")
             user = self.get_user(self.__login)
             for loved in user.get_loved_tracks():
+                print(loved)
                 artist = str(loved.track.artist)
                 title = str(loved.track.title)
                 track_id = App().tracks.search_track(artist, title)
+                print(artist, track_id)
                 if track_id is None:
                     Logger.warning(
                         "LastFM::__populate_loved_tracks(): %s, %s" % (
                             artist, title))
                 else:
+                    print(artist, title, "set_loved")
                     Track(track_id).set_loved(1)
         except Exception as e:
             Logger.error("LastFM::__populate_loved_tracks: %s" % e)
