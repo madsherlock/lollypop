@@ -393,7 +393,7 @@ class LastFM(GObject.Object, LastFMNetwork, LibreFMNetwork):
         try:
             print("__populate_loved_tracks try")
             user = self.get_user(self.__login)
-            for loved in user.get_loved_tracks():
+            for loved in user.get_loved_tracks(limit=None):
                 print(loved)
                 artist = str(loved.track.artist)
                 title = str(loved.track.title)
