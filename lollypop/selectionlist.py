@@ -475,9 +475,11 @@ class SelectionList(BaseView, Gtk.Overlay):
             if self.__mask & SelectionListMask.ARTISTS:
                 a = App().artists.get_sortname(a_index)
                 b = App().artists.get_sortname(b_index)
+                print(a, a_index, b, b_index)
             else:
                 a = model.get_value(itera, 1)
                 b = model.get_value(iterb, 1)
+                print(a, b)
             return strcoll(a, b)
 
     def __row_separator_func(self, model, iterator):
