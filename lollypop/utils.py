@@ -357,6 +357,19 @@ def remove_static(ids):
     return [item for item in ids if item >= 0]
 
 
+def create_dir(path):
+    """
+        Create dir
+        @param path as str
+    """
+    d = Gio.File.new_for_path(path)
+    if not d.query_exists():
+        try:
+            d.make_directory_with_parents()
+        except:
+            Logger.info("Can't create %s" % path)
+
+
 def get_icon_name(object_id, type=SelectionListMask.ARTISTS):
     """
         Return icon name for id

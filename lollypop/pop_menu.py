@@ -427,6 +427,13 @@ class EditMenu(BaseMenu):
             save_action.connect("activate", self.__save_to_collection, True)
             self.append(_("Save in collection"), "app.save_album_action")
         elif self._object.mtime == -1:
+            # We need kid3-cli to write tags
+            if not self._object.downloaded and App().art.kid3_available:
+                download_action = Gio.SimpleAction(
+                    name="download_album_action")
+                App().add_action(download_action)
+                download_action.connect("activate", self.__download_album)
+                self.append(_("Download tracks"), "app.download_album_action")
             save_action = Gio.SimpleAction(name="remove_album_action")
             App().add_action(save_action)
             save_action.connect("activate", self.__save_to_collection, False)
@@ -440,6 +447,20 @@ class EditMenu(BaseMenu):
         App().add_action(edit_tag_action)
         edit_tag_action.connect("activate", self.__edit_tag)
         self.append(_("Modify information"), "app.edit_tag_action")
+
+    def __download_album(self, action, variant):
+        """
+            Download album to disk
+            @param Gio.SimpleAction
+            @param GLib.Variant
+        """
+        def download_album():
+            from lollypop.helper_web import WebHelper
+            helper = WebHelper()
+            for track in self._object.tracks:
+                helper.set_uri(track, None)
+                helper.download_track_content(track)
+        App().task_helper.run(download_album)
 
     def __save_to_collection(self, action, variant, save):
         """

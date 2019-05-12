@@ -123,18 +123,6 @@ class BaseArt(GObject.GObject):
                          0, 0)
         return new_pixbuf
 
-    def _create_dir(self, path):
-        """
-            Create store dir
-            @param path as str
-        """
-        d = Gio.File.new_for_path(path)
-        if not d.query_exists():
-            try:
-                d.make_directory_with_parents()
-            except:
-                Logger.info("Can't create %s" % path)
-
 #######################
 # PRIVATE             #
 #######################

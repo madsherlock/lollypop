@@ -364,6 +364,17 @@ class Album(Base):
         App().scanner.emit("album-updated", self.id, save)
 
     @property
+    def downloaded(self):
+        """
+            True if album files are local
+            @return bool
+        """
+        for track in self.tracks:
+            if track.is_web:
+                return False
+        return True
+
+    @property
     def title(self):
         """
             Get album name

@@ -46,6 +46,21 @@ class YouTubeHelper:
         else:
             return "https://www.youtube.com/watch?v=%s" % yid
 
+    def download_uri_content(self, track, filepath):
+        """
+            Download track to disk
+            @param track as Track
+            @param filepath as str
+        """
+        # Remove playlist args
+        uri = sub("list=.*", "", track.uri)
+        argv = ["youtube-dl", "-f", "bestaudio", uri, "-o", filepath, None]
+        (s, o, e, s) = GLib.spawn_sync(None,
+                                       argv,
+                                       None,
+                                       GLib.SpawnFlags.SEARCH_PATH,
+                                       None)
+
     def get_uri_content(self, track):
         """
             Get content uri
