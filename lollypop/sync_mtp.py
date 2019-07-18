@@ -390,7 +390,7 @@ class MtpSync(GObject.Object):
                     f = Gio.File.new_for_uri(track.uri)
                     filename = f.get_basename()
                     album_uri = self.__get_album_on_device_uri(track)
-                    uri = "%s/%s" % (album_uri, filename)
+                    uri = "%s/%s" % (album_uri, escape(filename))
                     (convertion_needed,
                      uri) = self.__is_convertion_needed(track.uri, uri)
                     content += "%s\n" % uri
