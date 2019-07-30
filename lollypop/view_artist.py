@@ -151,26 +151,29 @@ class ArtistView(ArtistAlbumsView, ArtistViewCommon):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
-        ArtistAlbumsView._on_map(self, widget)
-        self.__on_album_changed(App().player)
-        self.__art_signal_id = App().art.connect(
-                                           "artist-artwork-changed",
-                                           self.__on_artist_artwork_changed)
-        self.__party_signal_id = App().player.connect(
-                                                "party-changed",
-                                                self.__on_album_changed)
-        self.__added_signal_id = App().player.connect(
-                                                "album-added",
-                                                self.__on_album_changed)
-        self.__removed_signal_id = App().player.connect(
-                                                  "album-removed",
-                                                  self.__on_album_changed)
-        App().settings.set_value("state-one-ids",
-                                 GLib.Variant("ai", self._genre_ids))
-        App().settings.set_value("state-two-ids",
-                                 GLib.Variant("ai", self._artist_ids))
-        App().settings.set_value("state-three-ids",
-                                 GLib.Variant("ai", []))
+        try:
+            ArtistAlbumsView._on_map(self, widget)
+            self.__on_album_changed(App().player)
+            self.__art_signal_id = App().art.connect(
+                                               "artist-artwork-changed",
+                                               self.__on_artist_artwork_changed)
+            self.__party_signal_id = App().player.connect(
+                                                    "party-changed",
+                                                    self.__on_album_changed)
+            self.__added_signal_id = App().player.connect(
+                                                    "album-added",
+                                                    self.__on_album_changed)
+            self.__removed_signal_id = App().player.connect(
+                                                      "album-removed",
+                                                      self.__on_album_changed)
+            App().settings.set_value("state-one-ids",
+                                     GLib.Variant("ai", self._genre_ids))
+            App().settings.set_value("state-two-ids",
+                                     GLib.Variant("ai", self._artist_ids))
+            App().settings.set_value("state-three-ids",
+                                     GLib.Variant("ai", []))
+        except:
+            pass
 
     def _on_unmap(self, widget):
         """
