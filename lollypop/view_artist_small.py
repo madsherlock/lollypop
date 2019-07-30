@@ -61,13 +61,16 @@ class ArtistViewSmall(View, ArtistViewCommon):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
-        View._on_map(self, widget)
-        App().settings.set_value("state-one-ids",
-                                 GLib.Variant("ai", self._genre_ids))
-        App().settings.set_value("state-two-ids",
-                                 GLib.Variant("ai", self._artist_ids))
-        App().settings.set_value("state-three-ids",
-                                 GLib.Variant("ai", []))
+        try:
+            View._on_map(self, widget)
+            App().settings.set_value("state-one-ids",
+                                     GLib.Variant("ai", self._genre_ids))
+            App().settings.set_value("state-two-ids",
+                                     GLib.Variant("ai", self._artist_ids))
+            App().settings.set_value("state-three-ids",
+                                     GLib.Variant("ai", []))
+        except:
+            pass
 
     def _on_adaptive_changed(self, window, status):
         """
