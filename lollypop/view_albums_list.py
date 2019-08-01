@@ -702,21 +702,24 @@ class AlbumsListView(LazyLoadingView, ViewController):
             Connect signals and set active ids
             @param widget as Gtk.Widget
         """
-        LazyLoadingView._on_map(self, widget)
-        if not self.__genre_ids and not self.__artist_ids:
-            return
-        if self.__genre_ids:
-            App().settings.set_value("state-one-ids",
-                                     GLib.Variant("ai", self.__genre_ids))
-            App().settings.set_value("state-two-ids",
-                                     GLib.Variant("ai", self.__artist_ids))
-        else:
-            App().settings.set_value("state-one-ids",
-                                     GLib.Variant("ai", self.__artist_ids))
-            App().settings.set_value("state-two-ids",
+        try:
+            LazyLoadingView._on_map(self, widget)
+            if not self.__genre_ids and not self.__artist_ids:
+                return
+            if self.__genre_ids:
+                App().settings.set_value("state-one-ids",
+                                         GLib.Variant("ai", self.__genre_ids))
+                App().settings.set_value("state-two-ids",
+                                         GLib.Variant("ai", self.__artist_ids))
+            else:
+                App().settings.set_value("state-one-ids",
+                                         GLib.Variant("ai", self.__artist_ids))
+                App().settings.set_value("state-two-ids",
+                                         GLib.Variant("ai", []))
+            App().settings.set_value("state-three-ids",
                                      GLib.Variant("ai", []))
-        App().settings.set_value("state-three-ids",
-                                 GLib.Variant("ai", []))
+        except:
+            pass
 
 #######################
 # PRIVATE             #

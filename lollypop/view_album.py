@@ -115,17 +115,20 @@ class AlbumView(LazyLoadingView, TracksView, ViewController):
             Set initial state and connect signals
             @param widget as Gtk.Widget
         """
-        LazyLoadingView._on_map(self, widget)
-        self._responsive_widget.set_margin_top(
-            self.__banner.default_height + 15)
-        App().window.emit("show-can-go-back", True)
-        App().window.emit("can-go-back-changed", True)
-        App().settings.set_value("state-one-ids",
-                                 GLib.Variant("ai", self.__genre_ids))
-        App().settings.set_value("state-two-ids",
-                                 GLib.Variant("ai", self.__artist_ids))
-        App().settings.set_value("state-three-ids",
-                                 GLib.Variant("ai", [self._album.id]))
+        try:
+            LazyLoadingView._on_map(self, widget)
+            self._responsive_widget.set_margin_top(
+                self.__banner.default_height + 15)
+            App().window.emit("show-can-go-back", True)
+            App().window.emit("can-go-back-changed", True)
+            App().settings.set_value("state-one-ids",
+                                     GLib.Variant("ai", self.__genre_ids))
+            App().settings.set_value("state-two-ids",
+                                     GLib.Variant("ai", self.__artist_ids))
+            App().settings.set_value("state-three-ids",
+                                     GLib.Variant("ai", [self._album.id]))
+        except:
+            pass
 
     def _on_unmap(self, widget):
         """
