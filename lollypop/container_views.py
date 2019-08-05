@@ -63,6 +63,8 @@ class ViewsContainer:
                                Type.WEB]:
                 view = self._get_view_albums(item_ids, [])
             elif item_ids[0] == Type.SEARCH:
+                if data is None:
+                    data = ""
                 view = self.get_view_search(data)
             elif item_ids[0] == Type.INFO:
                 view = self._get_view_info()
