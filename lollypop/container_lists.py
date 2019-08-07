@@ -37,7 +37,7 @@ class ListsContainer:
             Update list one
             @param update as bool
         """
-        if self._list_one.get_visible():
+        if self._list_one is not None and self._list_one.get_visible():
             sidebar_content = App().settings.get_enum("sidebar-content")
             if sidebar_content == SidebarContent.GENRES:
                 self.__update_list_genres(self._list_one, update)
@@ -51,7 +51,7 @@ class ListsContainer:
             Update list two
             @param update as bool
         """
-        if self._list_one.get_visible():
+        if self._list_one is not None and self._list_one.get_visible():
             sidebar_content = App().settings.get_enum("sidebar-content")
             ids = self._list_one.selected_ids
             if ids and ids[0] in [Type.PLAYLISTS, Type.YEARS]:
