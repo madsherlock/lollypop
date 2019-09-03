@@ -234,7 +234,8 @@ class CollectionsSettingsWidget(Gtk.Bin):
             App().player.stop()
             App().db.drop_db()
             App().db = Database()
-            App().window.container.list_two.hide()
+            if App().window.container.list_two is not None:
+                App().window.container.list_two.hide()
             App().window.container.stack.destroy_children()
             App().window.container.update_list_one()
             App().scanner.update(ScanType.FULL)
