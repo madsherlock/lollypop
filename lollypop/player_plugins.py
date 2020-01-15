@@ -28,6 +28,7 @@ class PluginsPlayer:
             @param playbin as Gst.bin
         """
         self.__playbin = playbin
+        self.__equalizer = None
         self.init()
 
     def init(self):
