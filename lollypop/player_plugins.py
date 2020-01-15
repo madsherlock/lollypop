@@ -72,27 +72,11 @@ class PluginsPlayer:
         bin.add(rglimiter)
         bin.add(rg_audiosink)
 
-        if App().settings.get_value("equalizer-enabled"):
-            self.__equalizer = Gst.ElementFactory.make("equalizer-10bands",
-                                                       "equalizer-10bands")
-            rg_audioconvert4 = Gst.ElementFactory.make("audioconvert",
-                                                       "audioconvert4")
-            bin.add(rg_audioconvert4)
-            bin.add(self.__equalizer)
-        else:
-            self.__equalizer = None
-
         rg_audioconvert1.link(self.rgvolume)
         self.rgvolume.link(rg_audioconvert2)
         self.rgvolume.link(rglimiter)
         rg_audioconvert2.link(self.volume)
-        self.volume.link(rg_audioconvert3)
-
-        if self.__equalizer is None:
-            rg_audioconvert3.link(rg_audiosink)
-        else:
-            rg_audioconvert3.link(self.__equalizer)
-            self.__equalizer.link(rg_audiosink)
+        self.volume.link(rg_audiosink)
 
         bin.add_pad(Gst.GhostPad.new(
             "sink",
