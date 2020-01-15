@@ -92,8 +92,7 @@ class PluginsPlayer:
             rg_audioconvert3.link(rg_audiosink)
         else:
             rg_audioconvert3.link(self.__equalizer)
-            self.__equalizer.link(rg_audioconvert4)
-            rg_audioconvert4.link(rg_audiosink)
+            self.__equalizer.link(rg_audiosink)
 
         bin.add_pad(Gst.GhostPad.new(
             "sink",
