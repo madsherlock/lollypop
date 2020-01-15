@@ -74,9 +74,8 @@ class PluginsPlayer:
         bin.add(rg_audiosink)
 
         rg_audioconvert1.link(self.rgvolume)
-        self.rgvolume.link(rg_audioconvert2)
+        self.rgvolume.link(self.volume)
         self.rgvolume.link(rglimiter)
-        rg_audioconvert2.link(self.volume)
         self.volume.link(rg_audiosink)
 
         bin.add_pad(Gst.GhostPad.new(
