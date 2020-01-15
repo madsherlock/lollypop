@@ -73,14 +73,13 @@ class PluginsPlayer:
         bin.add(rglimiter)
         bin.add(rg_audiosink)
 
-        rg_audioconvert1.link(self.rgvolume)
         self.rgvolume.link(self.volume)
         self.rgvolume.link(rglimiter)
         self.volume.link(rg_audiosink)
 
         bin.add_pad(Gst.GhostPad.new(
             "sink",
-            rg_audioconvert1.get_static_pad("sink")))
+            self.rgvolume.get_static_pad("sink")))
         self.__playbin.set_property("audio-sink", bin)
         self.update_equalizer()
 
