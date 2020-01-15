@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2020 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
+# Copyright (c) 2014-2019 Cedric Bellegarde <cedric.bellegarde@adishatz.org>
 # Copyright (C) 2010 Jonathan Matthew (replay gain code)
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,7 @@
 
 from gi.repository import Gst
 
-from lollypop.define import App, ReplayGain
+from lollypop.define import App
 from lollypop.logger import Logger
 
 
@@ -27,7 +27,6 @@ class PluginsPlayer:
             Init playbin
             @param playbin as Gst.bin
         """
-        self.__equalizer = None
         self.__playbin = playbin
         self.init()
 
@@ -35,64 +34,72 @@ class PluginsPlayer:
         """
             Init playbin
         """
-        try:
-            bin = Gst.ElementFactory.make("bin", "bin")
+        bin = Gst.ElementFactory.make("bin", "bin")
 
-            ac1 = Gst.ElementFactory.make("audioconvert", "ac1")
-            bin.add(ac1)
-            # Internal volume manager
-            self.volume = Gst.ElementFactory.make("volume", "volume")
-            self.volume.props.volume = 0.0
-            bin.add(self.volume)
-            ac1.link(self.volume)
-            previous_bin = self.volume
+        rg_audioconvert1 = Gst.ElementFactory.make("audioconvert",
+                                                   "audioconvert1")
+        rg_audioconvert2 = Gst.ElementFactory.make("audioconvert",
+                                                   "audioconvert2")
+        rg_audioconvert3 = Gst.ElementFactory.make("audioconvert",
+                                                   "audioconvert3")
+        self.volume = Gst.ElementFactory.make("volume",
+                                              "volume")
+        self.volume.props.volume = 0.0
+        self.rgvolume = Gst.ElementFactory.make("rgvolume",
+                                                "rgvolume")
+        rglimiter = Gst.ElementFactory.make("rglimiter",
+                                            "rglimiter")
+        rg_audiosink = Gst.ElementFactory.make("autoaudiosink",
+                                               "autoaudiosink")
 
-            # Equalizer
-            if App().settings.get_value("equalizer-enabled"):
-                ac2 = Gst.ElementFactory.make("audioconvert", "ac2")
-                bin.add(ac2)
-                previous_bin.link(ac2)
-                self.__equalizer = Gst.ElementFactory.make("equalizer-10bands",
-                                                           "equalizer-10bands")
-                bin.add(self.__equalizer)
-                ac2.link(self.__equalizer)
-                previous_bin = self.__equalizer
+        if not bin or not rg_audioconvert1 or\
+           not rg_audioconvert2 or not self.rgvolume or\
+           not rglimiter or not rg_audiosink:
+            Logger.info("Replay Gain not available, ")
+            Logger.info("please check your gstreamer installation...")
+            return
 
-            # Replay gain
-            replay_gain = App().settings.get_enum("replay-gain")
-            if replay_gain != ReplayGain.NONE:
-                ac3 = Gst.ElementFactory.make("audioconvert", "ac3")
-                bin.add(ac3)
-                previous_bin.link(ac3)
-                rgvolume = Gst.ElementFactory.make("rgvolume", "rgvolume")
-                if replay_gain == ReplayGain.ALBUM:
-                    rgvolume.props.album_mode = 1
-                else:
-                    rgvolume.props.album_mode = 0
-                rgvolume.props.pre_amp = App().settings.get_value(
-                    "replaygain").get_double()
-                bin.add(rgvolume)
-                ac3.link(rgvolume)
-                rglimiter = Gst.ElementFactory.make("rglimiter", "rglimiter")
-                bin.add(rglimiter)
-                rgvolume.link(rglimiter)
-                previous_bin = rglimiter
+        if self.rgvolume is not None:
+            self.rgvolume.props.album_mode = 1
+            self.rgvolume.props.pre_amp = App().settings.get_value(
+                "replaygain").get_double()
 
-            ac4 = Gst.ElementFactory.make("audioconvert", "ac4")
-            bin.add(ac4)
-            previous_bin.link(ac4)
-            audiosink = Gst.ElementFactory.make("autoaudiosink",
-                                                "autoaudiosink")
-            bin.add(audiosink)
-            ac4.link(audiosink)
+        bin.add(self.volume)
+        bin.add(self.rgvolume)
+        bin.add(rg_audioconvert1)
+        bin.add(rg_audioconvert2)
+        bin.add(rg_audioconvert3)
+        bin.add(rglimiter)
+        bin.add(rg_audiosink)
 
-            bin.add_pad(Gst.GhostPad.new(
-                "sink",
-                ac1.get_static_pad("sink")))
-            self.__playbin.set_property("audio-sink", bin)
-            self.update_equalizer()
-        except Exception as e:
-            Logger.error("PluginsPlayer::init(): %s", e)
+        if App().settings.get_value("equalizer-enabled"):
+            self.__equalizer = Gst.ElementFactory.make("equalizer-10bands",
+                                                       "equalizer-10bands")
+            rg_audioconvert4 = Gst.ElementFactory.make("audioconvert",
+                                                       "audioconvert4")
+            bin.add(rg_audioconvert4)
+            bin.add(self.__equalizer)
+        else:
+            self.__equalizer = None
+
+        rg_audioconvert1.link(self.rgvolume)
+        self.rgvolume.link(rg_audioconvert2)
+        self.rgvolume.link(rglimiter)
+        rg_audioconvert2.link(self.volume)
+        self.volume.link(rg_audioconvert3)
+
+        if self.__equalizer is None:
+            rg_audioconvert3.link(rg_audiosink)
+        else:
+            rg_audioconvert3.link(self.__equalizer)
+            self.__equalizer.link(rg_audioconvert4)
+            rg_audioconvert4.link(rg_audiosink)
+
+        bin.add_pad(Gst.GhostPad.new(
+            "sink",
+            rg_audioconvert1.get_static_pad("sink")))
+        self.__playbin.set_property("audio-sink", bin)
+        self.update_equalizer()
 
     def update_equalizer(self):
         """
