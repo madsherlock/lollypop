@@ -146,9 +146,22 @@ class CollectionScanner(GObject.GObject, TagReader):
                                                item.album_synced,
                                                item.album_mtime,
                                                item.storage_type)
+        
+
+    def save_disc(self, item,):
+        """
+            Add disc to DB
+            @param item as CollectionItem
+        """
+        item.disc_id = self.add_disc(item.discname,
+                                     item.album_id,
+                                     item.discnumber,
+                                     item.year,
+                                     item.timestamp)
         if item.year is not None:
-            App().albums.set_year(item.album_id, item.year)
-            App().albums.set_timestamp(item.album_id, item.timestamp)
+            App().discs.set_year(item.disc_id, item.year)
+            App().discs.set_timestamp(item.disc_id, item.timestamp)
+            # Supprimer de database_albums
 
     def save_track(self, item):
         """
@@ -186,11 +199,9 @@ class CollectionScanner(GObject.GObject, TagReader):
                                          item.uri,
                                          item.duration,
                                          item.tracknumber,
-                                         item.discnumber,
-                                         item.discname,
                                          item.album_id,
-                                         item.year,
-                                         item.timestamp,
+                                         item.original_year,
+                                         item.original_timestamp,
                                          item.track_pop,
                                          item.track_rate,
                                          item.track_loved,
@@ -238,14 +249,8 @@ class CollectionScanner(GObject.GObject, TagReader):
         # Update album genres
         for genre_id in item.genre_ids:
             App().albums.add_genre(item.album_id, genre_id)
-        # Update year based on tracks
-        year = App().tracks.get_year_for_album(item.album_id)
-        if year is not None:
-            App().albums.set_year(item.album_id, year)
-            timestamp = App().tracks.get_timestamp_for_album(item.album_id)
-            App().albums.set_timestamp(item.album_id, timestamp)
         App().cache.clear_durations(item.album_id)
-
+        
     def update_track(self, item):
         """
             Set track artists/genres
@@ -677,7 +682,7 @@ class CollectionScanner(GObject.GObject, TagReader):
             item = self.__add2db(uri, parsed.path, parsed.netloc,
                                  None, "", "", parsed.netloc,
                                  parsed.netloc, "", False, 0, False, 0, 0, 0,
-                                 None, 0, "", "", "", "", 1, 0, 0, 0, 0, 0,
+                                 None, 0, None, 0, "", "", "", "", 1, 0, 0, 0, 0, 0,
                                  False, 0, False, storage_type)
             items.append(item)
             self.__progress_count += 1
@@ -782,10 +787,9 @@ class CollectionScanner(GObject.GObject, TagReader):
         bpm = self.get_bpm(tags)
         compilation = self.get_compilation(tags)
         year = None
-        if not App().settings.get_value("ignore-original-date"):
-            (year, timestamp) = self.get_original_year(tags)
-        if year is None:
-            (year, timestamp) = self.get_year(tags)
+        #Remove ignore-original-date option
+        (original_year, original_timestamp) = self.get_original_year(tags)
+        (year, timestamp) = self.get_year(tags)
         # If no artists tag, use album artist
         if artists == "":
             artists = album_artists
@@ -803,14 +807,16 @@ class CollectionScanner(GObject.GObject, TagReader):
         return (title, artists, genres, a_sortnames, aa_sortnames,
                 album_artists, album_name, discname, album_loved, album_mtime,
                 album_synced, album_rate, album_pop, discnumber, year,
-                timestamp, mb_album_id, mb_track_id, mb_artist_id,
+                timestamp, original_year, original_timestamp,
+                mb_album_id, mb_track_id, mb_artist_id,
                 mb_album_artist_id, tracknumber, track_pop, track_rate, bpm,
                 track_mtime, track_ltime, track_loved, duration, compilation)
 
     def __add2db(self, uri, name, artists,
                  genres, a_sortnames, aa_sortnames, album_artists, album_name,
                  discname, album_loved, album_mtime, album_synced, album_rate,
-                 album_pop, discnumber, year, timestamp, mb_album_id,
+                 album_pop, discnumber, year, timestamp, original_year,
+                 orignal_timestamp, mb_album_id,
                  mb_track_id, mb_artist_id, mb_album_artist_id,
                  tracknumber, track_pop, track_rate, bpm, track_mtime,
                  track_ltime, track_loved, duration, compilation,
@@ -839,6 +845,8 @@ class CollectionScanner(GObject.GObject, TagReader):
                               discnumber=discnumber,
                               year=year,
                               timestamp=timestamp,
+                              original_year=original_year,
+                              original_timestamp=orignal_timestamp,
                               mb_album_id=mb_album_id,
                               mb_track_id=mb_track_id,
                               mb_artist_id=mb_artist_id,
@@ -854,5 +862,6 @@ class CollectionScanner(GObject.GObject, TagReader):
                               compilation=compilation,
                               storage_type=storage_type)
         self.save_album(item)
+        self.save_disc(item)
         self.save_track(item)
         return item

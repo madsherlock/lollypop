@@ -16,12 +16,14 @@ class CollectionItem:
         A collection item with an track id and associated album/genres/artists
     """
 
-    def __init__(self, track_id=None, album_id=None, new_album=False,
-                 genres=None, genre_ids=[], new_genre_ids=[], artist_ids=[],
+    def __init__(self, track_id=None, album_id=None, disc_id=None, 
+                 new_album=False, genres=None,
+                 genre_ids=[], new_genre_ids=[], artist_ids=[],
                  new_artist_ids=[], album_artist_ids=[],
                  new_album_artist_ids=[], album_name="", track_name="",
                  album_artists="", artists="", aa_sortnames="", a_sortnames="",
-                 year=None, timestamp=None, mb_album_artist_id="",
+                 year=None, timestamp=None, original_year=None,
+                 original_timestamp=None, mb_album_artist_id="",
                  mb_album_id=None, mb_artist_id="", mb_track_id=None,
                  lp_album_id=None, uri="", album_loved=False,
                  album_pop=0, album_rate=0, album_synced=0,
@@ -34,6 +36,7 @@ class CollectionItem:
             Init item
             @param track_id as int
             @param album_id as int
+            @param disc_id as int
             @param new_album as bool
             @param genres as str
             @param genre_ids as [int]
@@ -50,6 +53,8 @@ class CollectionItem:
             @param a_sortnames as str
             @param year as int
             @param timestamp as int
+            @param original_year as int
+            @param original_timestamp as int
             @param mb_album_artist_id as str
             @param mb_album_id as str
             @param mb_artist_id as str
@@ -76,6 +81,7 @@ class CollectionItem:
         """
         self.track_id = track_id
         self.album_id = album_id
+        self.disc_id = disc_id
         self.new_album = new_album
         self.genres = genres
         self.genre_ids = genre_ids
@@ -92,6 +98,8 @@ class CollectionItem:
         self.a_sortnames = a_sortnames
         self.year = year
         self.timestamp = timestamp
+        self.original_year = original_year
+        self.original_timestamp = original_timestamp
         self.mb_album_artist_id = mb_album_artist_id
         self.mb_album_id = mb_album_id
         self.mb_artist_id = mb_artist_id

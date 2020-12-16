@@ -58,7 +58,7 @@ class Track(Base):
         if album is None:
             from lollypop.objects_album import Album
             self.__album = Album(self.album_id)
-            self.__album.set_tracks([self], False)
+            self.__album.append_track_id(self.id)
         else:
             self.__album = album
 

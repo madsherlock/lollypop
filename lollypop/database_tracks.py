@@ -32,8 +32,8 @@ class TracksDatabase:
         """
         self.__db = db
 
-    def add(self, name, uri, duration, tracknumber, discnumber, discname,
-            album_id, year, timestamp, popularity, rate, loved, ltime, mtime,
+    def add(self, name, uri, duration, tracknumber,
+            disc_id, year, timestamp, popularity, rate, loved, ltime, mtime,
             mb_track_id, lp_track_id, bpm, storage_type):
         """
             Add a new track to database
@@ -41,9 +41,7 @@ class TracksDatabase:
             @param uri as string,
             @param duration as int
             @param tracknumber as int
-            @param discnumber as int
-            @param discname as str
-            @param album_id as int
+            @param disc_id as int
             @param year as int
             @param timestamp as int
             @param popularity as int
@@ -60,12 +58,11 @@ class TracksDatabase:
         with SqlCursor(self.__db, True) as sql:
             result = sql.execute(
                 "INSERT INTO tracks (name, uri, duration, tracknumber,\
-                discnumber, discname, album_id,\
-                year, timestamp, popularity, rate, loved,\
+                disc_id, year, timestamp, popularity, rate, loved,\
                 ltime, mtime, mb_track_id, lp_track_id, bpm, storage_type)\
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (name, uri, duration, tracknumber, discnumber,
-                 discname, album_id, year, timestamp, popularity,
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (name, uri, duration, tracknumber,
+                 disc_id, year, timestamp, popularity,
                  rate, loved, ltime, mtime, mb_track_id, lp_track_id,
                  bpm, storage_type))
             return result.lastrowid
@@ -215,20 +212,20 @@ class TracksDatabase:
                 return v[0]
             return None
 
-    def get_year_for_album(self, album_id):
+    def get_year_for_disc(self, disc_id):
         """
-            Get album year based on tracks
+            Get disc year based on tracks
             Use most used year by tracks
-            @param album_id as int
+            @param disc_id as int
             @return int
         """
         with SqlCursor(self.__db) as sql:
             result = sql.execute("SELECT year, COUNT(year) AS occurrence\
                                   FROM tracks\
-                                  WHERE tracks.album_id=?\
+                                  WHERE tracks.disc_id=?\
                                   GROUP BY year\
                                   ORDER BY occurrence DESC\
-                                  LIMIT 1", (album_id,))
+                                  LIMIT 1", (disc_id,))
             v = result.fetchone()
             if v is not None:
                 return v[0]

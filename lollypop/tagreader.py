@@ -757,11 +757,11 @@ class TagReader:
                 genre_ids.append(genre_id)
         return (added_genre_ids, genre_ids)
 
-    def add_album(self, album_name, mb_album_id, lp_album_id, artist_ids,
+    def add_album(self, name, mb_album_id, lp_album_id, artist_ids,
                   uri, loved, popularity, rate, synced, mtime, storage_type):
         """
             Add album to db
-            @param album_name as str
+            @param name as str
             @param mb_album_id as str
             @param lp_album_id as str
             @param artist_ids as [int]
@@ -781,7 +781,7 @@ class TagReader:
             parent = f.get_parent()
             if parent is not None:
                 uri = parent.get_uri()
-        album_id = App().albums.get_id(album_name, mb_album_id, artist_ids)
+        album_id = App().albums.get_id(name, mb_album_id, artist_ids)
         # Check storage type did not changed, remove album then
         if album_id is not None:
             current_storage_type = App().albums.get_storage_type(album_id)
@@ -793,13 +793,31 @@ class TagReader:
                 album_id = None
         if album_id is None:
             added = True
-            album_id = App().albums.add(album_name, mb_album_id, lp_album_id,
+            album_id = App().albums.add(name, mb_album_id, lp_album_id,
                                         artist_ids, uri, loved, popularity,
                                         rate, synced, mtime, storage_type)
         # Check if path did not change
         elif App().albums.get_uri(album_id) != uri:
             App().albums.set_uri(album_id, uri)
         return (added, album_id)
+
+    def add_disc(self, name, album_id, number, year, timestamp):
+        """
+            Add disc to db
+            @param name as str
+            @param album_id as int
+            @param number as int
+            @param year as int
+            @param timestamp as int
+            @return (added as bool, disc_id as int)
+            @commit needed
+        """
+        added = False
+        disc_id = App().discs.get_id(number, album_id)
+        if disc_id is None:
+            added = True
+            disc_id = App().discs.add(name, album_id, number, year, timestamp)
+        return disc_id
 
 #######################
 # PRIVATE             #

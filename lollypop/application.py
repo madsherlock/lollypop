@@ -40,6 +40,7 @@ from lollypop.sqlcursor import SqlCursor
 from lollypop.settings import Settings
 from lollypop.database_cache import CacheDatabase
 from lollypop.database_albums import AlbumsDatabase
+from lollypop.database_discs import DiscsDatabase
 from lollypop.database_artists import ArtistsDatabase
 from lollypop.database_genres import GenresDatabase
 from lollypop.database_tracks import TracksDatabase
@@ -136,6 +137,7 @@ class Application(Gtk.Application, ApplicationActions, ApplicationCmdline):
         self.cache = CacheDatabase()
         self.playlists = Playlists()
         self.albums = AlbumsDatabase(self.db)
+        self.discs = DiscsDatabase(self.db)
         self.artists = ArtistsDatabase(self.db)
         self.genres = GenresDatabase(self.db)
         self.tracks = TracksDatabase(self.db)

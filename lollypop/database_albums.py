@@ -163,28 +163,6 @@ class AlbumsDatabase:
             sql.execute("UPDATE albums SET rate=? WHERE rowid=?",
                         (rate, album_id))
 
-    def set_year(self, album_id, year):
-        """
-            Set year
-            @param album_id as int
-            @param year as int
-            @warning: commit needed
-        """
-        with SqlCursor(self.__db, True) as sql:
-            sql.execute("UPDATE albums SET year=? WHERE rowid=?",
-                        (year, album_id))
-
-    def set_timestamp(self, album_id, timestamp):
-        """
-            Set timestamp
-            @param album_id as int
-            @param timestamp as int
-            @warning: commit needed
-        """
-        with SqlCursor(self.__db, True) as sql:
-            sql.execute("UPDATE albums SET timestamp=? WHERE rowid=?",
-                        (timestamp, album_id))
-
     def set_uri(self, album_id, uri):
         """
             Set album uri for album id
@@ -227,14 +205,15 @@ class AlbumsDatabase:
         """
         with SqlCursor(self.__db) as sql:
             request = "SELECT DISTINCT albums.rowid\
-                       FROM albums, artists, album_artists\
+                       FROM albums, discs, artists, album_artists\
                        WHERE album_artists.album_id = albums.rowid\
+                       AND discs.album_id=albums.rowid\
                        AND (album_artists.artist_id = artists.rowid\
                             OR album_artists.artist_id=?)\
                        AND synced & (1 << ?) AND albums.storage_type & ?"
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
-                     albums.timestamp,\
+                     discs.timestamp,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
             filters = (Type.COMPILATIONS, index, StorageType.COLLECTION)
@@ -619,7 +598,7 @@ class AlbumsDatabase:
             @return int
         """
         with SqlCursor(self.__db) as sql:
-            result = sql.execute("SELECT year FROM albums where rowid=?",
+            result = sql.execute("SELECT disc.year FROM albums where rowid=?",
                                  (album_id,))
             v = result.fetchone()
             if v and v[0]:
@@ -875,23 +854,6 @@ class AlbumsDatabase:
         shuffle(album_ids)
         return album_ids
 
-    def get_disc_names(self, album_id, disc):
-        """
-            Get disc names
-            @param album_id as int
-            @param disc as int
-            @return name as str
-        """
-        with SqlCursor(self.__db) as sql:
-            request = "SELECT DISTINCT discname\
-                       FROM tracks\
-                       WHERE tracks.album_id=?\
-                       AND tracks.discnumber=?\
-                       AND discname!=''"
-            filters = (album_id, disc)
-            result = sql.execute(request, filters)
-            return list(itertools.chain(*result))
-
     def get_discs(self, album_id):
         """
             Get disc numbers
@@ -899,10 +861,10 @@ class AlbumsDatabase:
             @return [disc as int]
         """
         with SqlCursor(self.__db) as sql:
-            request = "SELECT DISTINCT discnumber\
-                       FROM tracks\
-                       WHERE tracks.album_id=?\
-                       ORDER BY discnumber"
+            request = "SELECT number\
+                       FROM discs\
+                       WHERE album_id=?\
+                       ORDER BY number"
             result = sql.execute(request, (album_id,))
             return list(itertools.chain(*result))
 
@@ -1029,7 +991,7 @@ class AlbumsDatabase:
         if orderby == OrderBy.ARTIST_YEAR:
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
-                     albums.timestamp,\
+                     discs.timestamp,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
         elif orderby == OrderBy.ARTIST_TITLE:
@@ -1041,11 +1003,11 @@ class AlbumsDatabase:
             order = " ORDER BY albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
         elif orderby == OrderBy.YEAR_DESC:
-            order = " ORDER BY albums.timestamp DESC,\
+            order = " ORDER BY discs.timestamp DESC,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
         elif orderby == OrderBy.YEAR_ASC:
-            order = " ORDER BY albums.timestamp ASC,\
+            order = " ORDER BY discs.timestamp ASC,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED"
         else:
@@ -1058,9 +1020,10 @@ class AlbumsDatabase:
             # Get albums for all artists
             if not artist_ids and not genre_ids:
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_artists, artists\
+                           FROM albums, discs, album_artists, artists\
                            WHERE albums.rowid = album_artists.album_id AND\
                            albums.storage_type & ? AND\
+                           discs.album_id=albums.rowid AND\
                            artists.rowid = album_artists.artist_id"
                 if not skipped:
                     request += " AND albums.loved != -1"
@@ -1071,10 +1034,11 @@ class AlbumsDatabase:
                 filters = (storage_type,)
                 filters += tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid FROM albums,\
-                           album_genres, album_artists, artists\
+                           album_genres, discs, album_artists, artists\
                            WHERE albums.rowid = album_artists.album_id AND\
                            artists.rowid = album_artists.artist_id AND\
                            albums.storage_type & ? AND\
+                           discs.album_id=albums.rowid AND\
                            album_genres.album_id=albums.rowid AND"
                 request += make_subrequest("album_genres.genre_id=?",
                                            "OR",
@@ -1088,9 +1052,10 @@ class AlbumsDatabase:
                 filters = (storage_type,)
                 filters += tuple(artist_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_artists, artists\
+                           FROM albums, discs, album_artists, artists\
                            WHERE album_artists.album_id=albums.rowid AND\
                            albums.storage_type & ? AND\
+                           discs.album_id=albums.rowid AND\
                            artists.rowid = album_artists.artist_id AND"
                 request += make_subrequest("artists.rowid=?",
                                            "OR",
@@ -1105,10 +1070,12 @@ class AlbumsDatabase:
                 filters += tuple(artist_ids)
                 filters += tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_genres, album_artists, artists\
+                           FROM albums, discs, album_genres,\
+                           album_artists, artists\
                            WHERE album_genres.album_id=albums.rowid AND\
                            artists.rowid = album_artists.artist_id AND\
                            albums.storage_type & ? AND\
+                           discs.album_id=albums.rowid AND\
                            album_artists.album_id=albums.rowid AND"
                 request += make_subrequest("artists.rowid=?",
                                            "OR",
@@ -1133,16 +1100,17 @@ class AlbumsDatabase:
         """
         genre_ids = remove_static(genre_ids)
         with SqlCursor(self.__db) as sql:
-            order = " ORDER BY albums.name, albums.timestamp"
+            order = " ORDER BY albums.name, discs.timestamp"
             result = []
             # Get all compilations
             if not genre_ids:
                 filters = (storage_type, Type.COMPILATIONS)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_artists\
+                           FROM albums, discs, album_artists\
                            WHERE albums.storage_type & ?\
                            AND album_artists.artist_id=?\
-                           AND album_artists.album_id=albums.rowid"
+                           AND album_artists.album_id=albums.rowid\
+                           AND discs.album_id=albums.rowid"
                 if not skipped:
                     request += " AND albums.loved != -1"
                 request += order
@@ -1152,10 +1120,11 @@ class AlbumsDatabase:
                 filters = (storage_type, Type.COMPILATIONS)
                 filters += tuple(genre_ids)
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_genres, album_artists\
+                           FROM albums, discs, album_genres, album_artists\
                            WHERE album_genres.album_id=albums.rowid\
                            AND albums.storage_type & ?\
                            AND albums.loved != -1\
+                           AND discs.album_id=albums.rowid\
                            AND album_artists.album_id=albums.rowid\
                            AND album_artists.artist_id=? AND"
                 request += make_subrequest("album_genres.genre_id=?",
@@ -1286,20 +1255,22 @@ class AlbumsDatabase:
         with SqlCursor(self.__db) as sql:
             order = " ORDER BY artists.sortname\
                      COLLATE NOCASE COLLATE LOCALIZED,\
-                     albums.timestamp,\
+                     discs.timestamp,\
                      albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED LIMIT ?"
             if year == Type.NONE:
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_artists, artists\
+                           FROM albums, discs, album_artists, artists\
                            WHERE albums.rowid=album_artists.album_id AND\
+                           AND discs.album_id=albums.rowid\
                            artists.rowid=album_artists.artist_id AND\
                            albums.year is null AND albums.storage_type & ?"
                 filter = (storage_type, limit)
             else:
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_artists, artists\
+                           FROM albums, discs, album_artists, artists\
                            WHERE albums.rowid=album_artists.album_id AND\
+                           AND discs.album_id=albums.rowid\
                            artists.rowid=album_artists.artist_id AND\
                            albums.year=? AND albums.storage_type & ?"
                 filter = (year, storage_type, limit)
@@ -1320,20 +1291,22 @@ class AlbumsDatabase:
             @return album ids as [int]
         """
         with SqlCursor(self.__db) as sql:
-            order = " ORDER BY albums.timestamp, albums.name\
+            order = " ORDER BY discs.timestamp, albums.name\
                      COLLATE NOCASE COLLATE LOCALIZED LIMIT ?"
             if year == Type.NONE:
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_artists\
+                           FROM albums, discs, album_artists\
                            WHERE album_artists.artist_id=?\
+                           AND discs.album_id=albums.rowid\
                            AND album_artists.album_id=albums.rowid\
                            AND albums.storage_type & ?\
                            AND albums.year is null"
                 filter = (Type.COMPILATIONS, storage_type, limit)
             else:
                 request = "SELECT DISTINCT albums.rowid\
-                           FROM albums, album_artists\
+                           FROM albums, discs, album_artists\
                            WHERE album_artists.artist_id=?\
+                           AND discs.album_id=albums.rowid\
                            AND album_artists.album_id=albums.rowid\
                            AND albums.storage_type & ?\
                            AND albums.year=?"
@@ -1456,10 +1429,10 @@ class AlbumsDatabase:
         with SqlCursor(self.__db) as sql:
             result = sql.execute("SELECT MAX(num_tracks)\
                                   FROM (SELECT COUNT(t.rowid)\
-                                  AS num_tracks FROM albums\
+                                  AS num_tracks FROM discs\
                                   INNER JOIN tracks t\
-                                  ON albums.rowid=t.album_id\
-                                  GROUP BY albums.rowid)")
+                                  ON discs.rowid=t.disc_id\
+                                  GROUP BY discs.rowid)")
             v = result.fetchone()
             if v and v[0] is not None:
                 self.__max_count = v[0]

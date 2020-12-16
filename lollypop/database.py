@@ -63,8 +63,6 @@ class Database:
                                               mb_album_id TEXT,
                                               lp_album_id TEXT,
                                               no_album_artist BOOLEAN NOT NULL,
-                                              year INT,
-                                              timestamp INT,
                                               uri TEXT NOT NULL,
                                               popularity INT NOT NULL,
                                               rate INT NOT NULL,
@@ -72,6 +70,12 @@ class Database:
                                               mtime INT NOT NULL,
                                               storage_type INT NOT NULL,
                                               synced INT NOT NULL)"""
+    __create_discs = """CREATE TABLE discs (id INTEGER PRIMARY KEY,
+                                            name TEXT,
+                                            album_id INT NOT NULL,
+                                            number INT,
+                                            year INT,
+                                            timestamp INT)"""
     __create_artists = """CREATE TABLE artists (id INTEGER PRIMARY KEY,
                                                name TEXT NOT NULL,
                                                sortname TEXT NOT NULL,
@@ -96,9 +100,7 @@ class Database:
                                               uri TEXT NOT NULL,
                                               duration INT,
                                               tracknumber INT,
-                                              discnumber INT,
-                                              discname TEXT,
-                                              album_id INT NOT NULL,
+                                              disc_id INT NOT NULL,
                                               year INT,
                                               timestamp INT,
                                               popularity INT NOT NULL,
@@ -141,6 +143,7 @@ class Database:
                 # Create db schema
                 with SqlCursor(self, True) as sql:
                     sql.execute(self.__create_albums)
+                    sql.execute(self.__create_discs)
                     sql.execute(self.__create_artists)
                     sql.execute(self.__create_featuring)
                     sql.execute(self.__create_genres)

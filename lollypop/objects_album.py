@@ -15,94 +15,11 @@ from hashlib import md5
 
 from lollypop.define import App, StorageType, ScanUpdate
 from lollypop.objects_track import Track
+from lollypop.objects_disc import Disc
 from lollypop.objects import Base
 from lollypop.utils import emit_signal
 from lollypop.collection_item import CollectionItem
 from lollypop.logger import Logger
-
-
-class Disc:
-    """
-        Represent an album disc
-    """
-
-    def __init__(self, album, disc_number, storage_type, skipped):
-        self.db = App().albums
-        self.__tracks = []
-        self.__album = album
-        self.__storage_type = storage_type
-        self.__number = disc_number
-        self.__skipped = skipped
-
-    def __del__(self):
-        """
-            Remove ref cycles
-        """
-        self.__album = None
-
-    # Used by pickle
-    def __getstate__(self):
-        self.db = None
-        return self.__dict__
-
-    def __setstate__(self, d):
-        self.__dict__.update(d)
-        self.db = App().albums
-
-    def set_tracks(self, tracks):
-        """
-            Set disc tracks
-            @param tracks as [Track]
-        """
-        self.__tracks = tracks
-
-    @property
-    def number(self):
-        """
-            Get disc number
-        """
-        return self.__number
-
-    @property
-    def album(self):
-        """
-            Get disc album
-            @return Album
-        """
-        return self.__album
-
-    @property
-    def track_ids(self):
-        """
-            Get disc track ids
-            @return [int]
-        """
-        return [track.id for track in self.tracks]
-
-    @property
-    def track_uris(self):
-        """
-            Get disc track uris
-            @return [str]
-        """
-        return [track.uri for track in self.tracks]
-
-    @property
-    def tracks(self):
-        """
-            Get disc tracks
-            @return [Track]
-        """
-        if not self.__tracks and self.album.id is not None:
-            self.__tracks = [Track(track_id, self.album)
-                             for track_id in self.db.get_disc_track_ids(
-                self.album.id,
-                self.album.genre_ids,
-                self.album.artist_ids,
-                self.number,
-                self.__storage_type,
-                self.__skipped)]
-        return self.__tracks
 
 
 class Album(Base):
@@ -136,10 +53,8 @@ class Album(Base):
         Base.__init__(self, App().albums)
         self.id = album_id
         self.genre_ids = genre_ids
-        self._tracks = []
-        self._discs = []
+        self.__tracks = None
         self.__skipped = skipped
-        self.__one_disc = None
         self.__tracks_storage_type = self.storage_type
         # Use artist ids from db else
         if artist_ids:
@@ -153,7 +68,7 @@ class Album(Base):
         """
             Remove ref cycles
         """
-        self.reset_tracks()
+        self.__tracks = None
 
     # Used by pickle
     def __getstate__(self):
@@ -164,92 +79,41 @@ class Album(Base):
         self.__dict__.update(d)
         self.db = App().albums
 
-    def set_discs(self, discs):
+    def set_track_ids(self, track_ids):
         """
-            Set album discs
-            @param discs as [Disc]
+            Set album track ids
+            @param track_ids as [int]
         """
-        self._discs = discs
+        self.__tracks = []
+        self.append_track_ids(track_ids)
 
-    def set_tracks(self, tracks, clone=True):
+    def append_track_id(self, track_id):
         """
-            Set album tracks, do not disable clone if you know self is already
-            used
-            @param tracks as [Track]
-            @param clone as bool
+            Append track_id to album
+            @param track_id as int
         """
-        if clone:
-            self._tracks = []
-            for track in tracks:
-                new_track = Track(track.id, self)
-                self._tracks.append(new_track)
-        # Album tracks already belong to self
-        # Detach those tracks
-        elif self._tracks:
-            new_album = Album(self.id, self.genre_ids, self.artist_ids)
-            new_tracks = []
-            for track in self._tracks:
-                if track not in tracks:
-                    track.set_album(new_album)
-                    new_tracks.append(track)
-            new_album._tracks = new_tracks
-            self._tracks = tracks
-        else:
-            self._tracks = tracks
+        if self.__tracks is None:
+            self.__tracks = []
+        self.__tracks.append(Track(track_id, self))
 
-    def append_track(self, track, clone=True):
+    def append_track_ids(self, track_ids):
         """
-            Append track to album, do not disable clone if you know self is
-            already used
-            @param track as Track
-            @param clone as bool
+            Append track ids to album
+            @param track_ids as [int]
         """
-        if clone:
-            self._tracks.append(Track(track.id, self))
-        else:
-            self._tracks.append(track)
-            track.set_album(self)
+        if self.__tracks is None:
+            self.__tracks = []
+        for track_id in track_ids:
+            self.__tracks.append(Track(track_id, self))
 
-    def append_tracks(self, tracks, clone=True):
+    def remove_track_id(self, track_id):
         """
-            Append tracks to album, do not disable clone if you know self is
-            already used
-            @param tracks as [Track]
-            @param clone as bool
+            Remove track_id from album
+            @param track_id as int
         """
-        for track in tracks:
-            self.append_track(track, clone)
-
-    def remove_track(self, track):
-        """
-            Remove track from album, album id is None if empty
-            @param track as Track
-        """
-        for _track in self.tracks:
-            if track.id == _track.id:
-                self._tracks.remove(_track)
-        empty = len(self._tracks) == 0
-        if empty:
-            # We don't the album to load tracks anymore
-            self.id = None
-
-    def reset_tracks(self):
-        """
-            Reset album tracks, useful for tracks loaded async
-        """
-        self._tracks = []
-        self._discs = []
-        self.reset("artists")
-        self.reset("artist_ids")
-        self.reset("lp_album_id")
-
-    def disc_names(self, disc):
-        """
-            Disc names
-            @param disc as int
-            @return disc names as [str]
-        """
-        return self.db.get_disc_names(self.id, disc)
+        for track in self.__tracks:
+            if track.id == track_id:
+                self.__tracks.remove(_track)
 
     def set_loved(self, loved):
         """
@@ -321,7 +185,6 @@ class Album(Base):
             elif self.synced != 0 and self.synced != len(self.tracks):
                 from lollypop.search import Search
                 Search().load_tracks(self, cancellable)
-                self.reset_tracks()
         except Exception as e:
             Logger.warning("Album::load_tracks(): %s" % e)
         return True
@@ -414,49 +277,14 @@ class Album(Base):
         """
         if self.id is None:
             return []
-        if self._tracks:
+        if self.__tracks is not None:
             return self._tracks
-        tracks = []
         for disc in self.discs:
             tracks += disc.tracks
         # Already cached by another thread
         if not self._tracks:
             self._tracks = tracks
         return tracks
-
-    @property
-    def one_disc(self):
-        """
-            Get album as one disc
-            @return Disc
-        """
-        if self.__one_disc is None:
-            tracks = self.tracks
-            self.__one_disc = Disc(self, 0, self.__tracks_storage_type,
-                                   self.__skipped)
-            self.__one_disc.set_tracks(tracks)
-        return self.__one_disc
-
-    @property
-    def discs(self):
-        """
-            Get albums discs
-            @return [Disc]
-        """
-        if self._discs:
-            return self._discs
-        discs = []
-        disc_numbers = self.db.get_discs(self.id)
-        for disc_number in disc_numbers:
-            disc = Disc(self, disc_number,
-                        self.__tracks_storage_type,
-                        self.__skipped)
-            if disc.tracks:
-                discs.append(disc)
-        # Already cached by another thread
-        if not self._discs:
-            self._discs = discs
-        return discs
 
     @property
     def duration(self):

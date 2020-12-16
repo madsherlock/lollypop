@@ -314,9 +314,10 @@ class ArtistsDatabase:
         with SqlCursor(self.__db, True) as sql:
             sql.execute("DELETE FROM featuring")
             result = sql.execute(
-                        "SELECT track_artists.artist_id, tracks.album_id\
-                         FROM tracks, track_artists\
+                        "SELECT track_artists.artist_id, discs.album_id\
+                         FROM tracks, track_artists, discs\
                          WHERE track_artists.track_id = tracks.rowid\
+                         AND discs.rowid=tracks.disc_id\
                          AND NOT EXISTS (\
                           SELECT * FROM album_artists WHERE\
                           album_artists.album_id = tracks.album_id AND\
