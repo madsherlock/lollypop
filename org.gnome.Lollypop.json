@@ -323,6 +323,16 @@
             ]
         },
         {
+            "name" : "pygobject",
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/pygobject.git"
+                }
+            ]
+        },
+        {
             "name" : "lollypop",
             "buildsystem" : "meson",
             "sources" : [
