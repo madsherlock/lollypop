@@ -18,7 +18,7 @@ from lollypop.define import App, Type, LovedFlags
 from lollypop.objects_track import Track
 
 
-class LovedWidget(Gtk.Bin):
+class LovedWidget(Gtk.Widget):
     """
         Loved widget
     """
@@ -29,7 +29,7 @@ class LovedWidget(Gtk.Bin):
             @param object as Album/Track
             @param icon_size as Gtk.IconSize
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self.__object = object
         self.__icon_size = icon_size
         self.__timeout_id = None

@@ -15,14 +15,14 @@ from gi.repository import Gtk, GLib, Pango
 from lollypop.define import App
 
 
-class Placeholder(Gtk.Bin):
+class Placeholder(Gtk.Widget):
     def __init__(self, text, icon_name):
         """
             Init placeholder
             @param text as str
             @param icon_name as str
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self.__label = Gtk.Label.new()
         self.__label.show()
         self.__label.set_markup("%s" % GLib.markup_escape_text(text))

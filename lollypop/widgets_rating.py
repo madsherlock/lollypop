@@ -20,7 +20,7 @@ from lollypop.define import App
 from lollypop.logger import Logger
 
 
-class RatingWidget(Gtk.Bin):
+class RatingWidget(Gtk.Widget):
     """
         Rate widget
     """
@@ -32,7 +32,7 @@ class RatingWidget(Gtk.Bin):
             @param is album as bool
             @param icon_size as Gtk.IconSize
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self.__object = object
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/RatingWidget.ui")

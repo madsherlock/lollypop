@@ -21,7 +21,7 @@ from lollypop.define import ViewType
 from lollypop.helper_gestures import GesturesHelper
 
 
-class ToolbarInfo(Gtk.Bin, ArtworkPlayerWidget, GesturesHelper):
+class ToolbarInfo(Gtk.Widget, GesturesHelper):
     """
         Informations toolbar
     """
@@ -30,7 +30,7 @@ class ToolbarInfo(Gtk.Bin, ArtworkPlayerWidget, GesturesHelper):
         """
             Init toolbar
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self.__width = 0
         horizontal_box = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 15)
         horizontal_box.show()

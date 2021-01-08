@@ -114,7 +114,7 @@ class ArtistRow(Gtk.ListBoxRow):
             del surface
 
 
-class SimilarsMenu(Gtk.Bin, SignalsHelper):
+class SimilarsMenu(Gtk.Widget, SignalsHelper):
     """
         A popover with similar artists
     """
@@ -125,7 +125,7 @@ class SimilarsMenu(Gtk.Bin, SignalsHelper):
             Init popover
             @param artist_id as int
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         (path, env) = get_youtube_dl()
         self.__show_all = path is not None
         self.__added = []

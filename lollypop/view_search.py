@@ -120,7 +120,7 @@ class SearchStack(Gtk.Stack):
         return self.__current_child
 
 
-class SearchView(View, Gtk.Bin, SignalsHelper):
+class SearchView(View, Gtk.Widget, SignalsHelper):
     """
         View for searching albums/tracks
     """
@@ -141,7 +141,7 @@ class SearchView(View, Gtk.Bin, SignalsHelper):
                       ViewType.SEARCH |
                       ViewType.SCROLLED |
                       ViewType.OVERLAY)
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self.__timeout_id = None
         self.__current_search = ""
         self.__search = Search()

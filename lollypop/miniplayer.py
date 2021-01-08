@@ -150,7 +150,7 @@ class MiniPlayer(Handy.WindowHandle, SizeAllocationHelper, SignalsHelper):
         """
             Force preferred width
         """
-        (min, nat) = Gtk.Bin.do_get_preferred_width(self)
+        (min, nat) = Gtk.Widget.do_get_preferred_width(self)
         # Allow resizing
         return (0, nat)
 

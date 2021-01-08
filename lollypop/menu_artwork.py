@@ -20,7 +20,7 @@ from lollypop.widgets_artwork_artist import ArtistArtworkSearchWidget
 from lollypop.widgets_artwork_album import AlbumArtworkSearchWidget
 
 
-class ArtistArtworkMenu(Gtk.Bin):
+class ArtistArtworkMenu(Gtk.Widget):
     """
         A popover to change artwork
     """
@@ -36,7 +36,7 @@ class ArtistArtworkMenu(Gtk.Bin):
             @param view_type as ViewType
             @param is_submenu as bool
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self.__artist_id = artist_id
         self.view_type = view_type
         self.__is_submenu = is_submenu
@@ -69,7 +69,7 @@ class ArtistArtworkMenu(Gtk.Bin):
             return None
 
 
-class AlbumArtworkMenu(Gtk.Bin):
+class AlbumArtworkMenu(Gtk.Widget):
     """
         A popover to change artwork
     """
@@ -83,7 +83,7 @@ class AlbumArtworkMenu(Gtk.Bin):
             Init popover
             @param artist_id as int
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self.__artist_id = artist_id
         self.view_type = view_type
         self.__is_submenu = is_submenu

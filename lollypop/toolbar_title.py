@@ -15,7 +15,7 @@ from gi.repository import Gtk
 from lollypop.widgets_player_progress import ProgressPlayerWidget
 
 
-class ToolbarTitle(Gtk.Bin):
+class ToolbarTitle(Gtk.Widget):
     """
         Title toolbar
     """
@@ -24,7 +24,7 @@ class ToolbarTitle(Gtk.Bin):
         """
             Init toolbar
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         progress_widget = ProgressPlayerWidget()
         progress_widget.show()
         self.add(progress_widget)

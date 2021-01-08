@@ -127,19 +127,19 @@ class Application(Gtk.Application, ApplicationActions, ApplicationCmdline):
             "resource:///org/gnome/Lollypop/application.css")
         cssProvider = Gtk.CssProvider()
         cssProvider.load_from_file(cssProviderFile)
-        screen = Gdk.Screen.get_default()
+        display = Gdk.Display.get_default()
         styleContext = Gtk.StyleContext()
-        styleContext.add_provider_for_screen(screen, cssProvider,
-                                             Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        styleContext.add_provider_for_display(display, cssProvider,
+                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
         # Devel version, load devel theme
         if self.__app_id is None:
             css = "*:selected{ background-color: red; }"
             cssProvider = Gtk.CssProvider()
             cssProvider.load_from_data(css.encode("utf-8"))
-            screen = Gdk.Screen.get_default()
+            display = Gdk.Display.get_default()
             styleContext = Gtk.StyleContext()
-            styleContext.add_provider_for_screen(
-                screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER + 1)
+            styleContext.add_provider_for_display(
+                display, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER + 1)
         self.db = Database()
         self.cache = CacheDatabase()
         self.playlists = Playlists()

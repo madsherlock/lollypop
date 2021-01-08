@@ -181,7 +181,7 @@ class BrowsableCoverWidget(Gtk.EventBox, CoverWidgetBase, GesturesHelper):
         App().window.container.show_view([Type.ALBUM], self._album)
 
 
-class CoverWidget(Gtk.Bin, CoverWidgetBase):
+class CoverWidget(Gtk.Widget, CoverWidgetBase):
     """
         Widget showing current album cover
     """
@@ -196,7 +196,7 @@ class CoverWidget(Gtk.Bin, CoverWidgetBase):
             @param album as Album
             @param view_type as ViewType
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         CoverWidgetBase.__init__(self, album, view_type)
         self.add(self._artwork)
 

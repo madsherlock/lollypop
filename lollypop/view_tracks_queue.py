@@ -22,7 +22,7 @@ from lollypop.helper_signals import SignalsHelper, signals
 from lollypop.helper_gestures import GesturesHelper
 
 
-class QueueTracksView(Gtk.Bin, GesturesHelper, SignalsHelper):
+class QueueTracksView(Gtk.Widget, GesturesHelper, SignalsHelper):
     """
         Responsive view showing queued tracks
     """
@@ -32,7 +32,7 @@ class QueueTracksView(Gtk.Bin, GesturesHelper, SignalsHelper):
         """
             Init view
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         label = Gtk.Label.new(_("Currently in queue"))
         label.show()
         label.get_style_context().add_class("dim-label")

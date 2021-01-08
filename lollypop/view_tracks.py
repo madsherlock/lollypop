@@ -21,7 +21,7 @@ from lollypop.utils import emit_signal
 from lollypop.helper_size_allocation import SizeAllocationHelper
 
 
-class TracksView(Gtk.Bin, SignalsHelper, SizeAllocationHelper):
+class TracksView(Gtk.Widget, SignalsHelper, SizeAllocationHelper):
     """
         Responsive view showing tracks
     """
@@ -42,7 +42,7 @@ class TracksView(Gtk.Bin, SignalsHelper, SizeAllocationHelper):
             @param album as Album
             @param view_type as ViewType
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self._view_type = view_type
         self._tracks_widget_left = {}
         self._tracks_widget_right = {}

@@ -20,7 +20,7 @@ from lollypop.utils import popup_widget, emit_signal, get_network_available
 from lollypop.progressbar import ButtonProgressBar
 
 
-class ToolbarEnd(Gtk.Bin):
+class ToolbarEnd(Gtk.Widget):
     """
         Toolbar end
     """
@@ -30,7 +30,7 @@ class ToolbarEnd(Gtk.Bin):
             Init toolbar
             @param window as Window
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self.set_hexpand(True)
         self.__search_popover = None
         self.__devices_popover = None

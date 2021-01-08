@@ -17,7 +17,7 @@ from lollypop.utils import emit_signal
 from lollypop.helper_signals import SignalsHelper, signals_map
 
 
-class ApplicationMenu(Gtk.Bin, SignalsHelper):
+class ApplicationMenu(Gtk.Widget, SignalsHelper):
     """
         Configure defaults items
     """
@@ -31,7 +31,7 @@ class ApplicationMenu(Gtk.Bin, SignalsHelper):
         """
             Init popover
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         builder = Gtk.Builder()
         builder.add_from_resource("/org/gnome/Lollypop/Appmenu.ui")
         widget = builder.get_object("widget")

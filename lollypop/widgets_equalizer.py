@@ -67,7 +67,7 @@ PRESETS = {
 }
 
 
-class EqualizerWidget(Gtk.Bin):
+class EqualizerWidget(Gtk.Widget):
     """
         An equalizer manager widget
     """
@@ -76,7 +76,7 @@ class EqualizerWidget(Gtk.Bin):
         """
             Init widget
         """
-        Gtk.Bin.__init__(self)
+        Gtk.Widget.__init__(self)
         self.set_property("valign", Gtk.Align.START)
         self.set_property("halign", Gtk.Align.CENTER)
         self.__timeout_id = None
