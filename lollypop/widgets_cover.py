@@ -18,7 +18,7 @@ from lollypop.helper_signals import SignalsHelper, signals_map
 from lollypop.helper_gestures import GesturesHelper
 
 
-class CoverWidgetBase(SignalsHelper):
+class CoverWidgetBase(Gtk.Image, SignalsHelper):
     """
         Widget showing current album cover
     """
@@ -30,13 +30,12 @@ class CoverWidgetBase(SignalsHelper):
             @param album as Album
             @param view_type as ViewType
         """
+        Gtk.Image.__init__(self)
         self.set_property("halign", Gtk.Align.START)
         self.set_property("valign", Gtk.Align.CENTER)
         self._album = album
         self._view_type = view_type
         self.__art_size = 1
-        self._artwork = Gtk.Image.new()
-        self._artwork.show()
         return [
             (App().album_art, "album-artwork-changed",
              "_on_album_artwork_changed")
@@ -50,7 +49,7 @@ class CoverWidgetBase(SignalsHelper):
         if self.__art_size == art_size:
             return
         self.__art_size = art_size
-        App().art_helper.set_frame(self._artwork,
+        App().art_helper.set_frame(self,
                                    "small-cover-frame",
                                    self.__art_size,
                                    self.__art_size)
@@ -78,7 +77,7 @@ class CoverWidgetBase(SignalsHelper):
                 self._album,
                 self.__art_size,
                 self.__art_size,
-                self._artwork.get_scale_factor(),
+                self.get_scale_factor(),
                 ArtBehaviour.CACHE | ArtBehaviour.CROP_SQUARE,
                 self._on_album_artwork)
 
@@ -92,13 +91,13 @@ class CoverWidgetBase(SignalsHelper):
                 icon_size = Gtk.IconSize.DIALOG
             else:
                 icon_size = Gtk.IconSize.DND
-            self._artwork.set_from_icon_name("folder-music-symbolic",
-                                             icon_size)
+            self.set_from_icon_name("folder-music-symbolic",
+                                    icon_size)
         else:
-            self._artwork.set_from_surface(surface)
+            self.set_from_surface(surface)
 
 
-class EditCoverWidget(Gtk.EventBox, CoverWidgetBase, GesturesHelper):
+class EditCoverWidget(CoverWidgetBase, GesturesHelper):
     """
         Widget showing current album cover (edition allowed)
     """
@@ -109,11 +108,9 @@ class EditCoverWidget(Gtk.EventBox, CoverWidgetBase, GesturesHelper):
             @param album as Album
             @param view_type as ViewType
         """
-        Gtk.EventBox.__init__(self)
         CoverWidgetBase.__init__(self, album, view_type)
         GesturesHelper.__init__(self, self)
         self.connect("realize", set_cursor_type)
-        self.add(self._artwork)
 
 #######################
 # PROTECTED           #
@@ -151,7 +148,7 @@ class EditCoverWidget(Gtk.EventBox, CoverWidgetBase, GesturesHelper):
             self._artwork_popup.destroy()
 
 
-class BrowsableCoverWidget(Gtk.EventBox, CoverWidgetBase, GesturesHelper):
+class BrowsableCoverWidget(CoverWidgetBase, GesturesHelper):
     """
         Widget showing current album cover
     """
@@ -162,9 +159,7 @@ class BrowsableCoverWidget(Gtk.EventBox, CoverWidgetBase, GesturesHelper):
             @param album as Album
             @param view_type as ViewType
         """
-        Gtk.EventBox.__init__(self)
         CoverWidgetBase.__init__(self, album, view_type)
-        self.add(self._artwork)
         GesturesHelper.__init__(self, self)
         self.connect("realize", set_cursor_type)
 
@@ -181,7 +176,7 @@ class BrowsableCoverWidget(Gtk.EventBox, CoverWidgetBase, GesturesHelper):
         App().window.container.show_view([Type.ALBUM], self._album)
 
 
-class CoverWidget(Gtk.Widget, CoverWidgetBase):
+class CoverWidget(CoverWidgetBase):
     """
         Widget showing current album cover
     """
@@ -198,7 +193,6 @@ class CoverWidget(Gtk.Widget, CoverWidgetBase):
         """
         Gtk.Widget.__init__(self)
         CoverWidgetBase.__init__(self, album, view_type)
-        self.add(self._artwork)
 
 #######################
 # PRIVATE             #

@@ -163,6 +163,6 @@ class AlbumArtworkSearchWidget(ArtworkSearchWidget, SignalsHelper):
         """
         if surface is None:
             self.__artwork.set_from_icon_name("folder-music-symbolic",
-                                              Gtk.IconSize.BUTTON)
+                                              Gtk.IconSize.NORMAL)
         else:
             self.__artwork.set_from_surface(surface)

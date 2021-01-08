@@ -39,9 +39,9 @@ class Window(Handy.ApplicationWindow, SignalsHelper):
         self.set_auto_startup_notification(False)
         self.connect("realize", self.__on_realize)
         # Does not work with a Gtk.Gesture in GTK3
-        self.connect("button-release-event", self.__on_button_release_event)
-        self.connect("window-state-event", self.__on_window_state_event)
-        self.connect("configure-event", self.__on_configure_event)
+        # self.connect("button-release-event", self.__on_button_release_event)
+        # self.connect("window-state-event", self.__on_window_state_event)
+        # self.connect("configure-event", self.__on_configure_event)
         self.connect("destroy", self.__on_destroy)
         self.set_size_request(ArtSize.MINIPLAYER, ArtSize.MINIPLAYER)
         return [

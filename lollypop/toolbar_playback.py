@@ -28,7 +28,7 @@ class ToolbarPlayback(Gtk.Box):
         """
         Gtk.Box.__init__(self)
         self.__back_button = Gtk.Button.new_from_icon_name(
-            "go-previous-symbolic", Gtk.IconSize.BUTTON)
+            "go-previous-symbolic", Gtk.IconSize.NORMAL)
         self.__back_button.show()
         self.__back_button.connect("clicked", self.__on_back_button_clicked)
         self.__player_buttons = ButtonsPlayerWidget()

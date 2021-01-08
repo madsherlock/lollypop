@@ -105,7 +105,7 @@ class AlbumRow(Gtk.ListBoxRow):
         self.__title_label.get_style_context().add_class("dim-label")
         if self.__view_type & (ViewType.PLAYBACK | ViewType.PLAYLISTS):
             button = Gtk.Button.new_from_icon_name("list-remove-symbolic",
-                                                   Gtk.IconSize.BUTTON)
+                                                   Gtk.IconSize.NORMAL)
             if self.__view_type & ViewType.PLAYBACK:
                 button.set_tooltip_text(_("Remove from playback"))
             else:
@@ -299,7 +299,7 @@ class AlbumRow(Gtk.ListBoxRow):
             return
         if surface is None:
             self.__artwork.set_from_icon_name("folder-music-symbolic",
-                                              Gtk.IconSize.BUTTON)
+                                              Gtk.IconSize.NORMAL)
         else:
             self.__artwork.set_from_surface(surface)
         self.show_all()

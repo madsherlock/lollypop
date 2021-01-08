@@ -123,23 +123,6 @@ class Application(Gtk.Application, ApplicationActions, ApplicationCmdline):
         except Exception as e:
             Logger.error("Application::init(): %s" % e)
 
-        cssProviderFile = Gio.File.new_for_uri(
-            "resource:///org/gnome/Lollypop/application.css")
-        cssProvider = Gtk.CssProvider()
-        cssProvider.load_from_file(cssProviderFile)
-        display = Gdk.Display.get_default()
-        styleContext = Gtk.StyleContext()
-        styleContext.add_provider_for_display(display, cssProvider,
-                                              Gtk.STYLE_PROVIDER_PRIORITY_USER)
-        # Devel version, load devel theme
-        if self.__app_id is None:
-            css = "*:selected{ background-color: red; }"
-            cssProvider = Gtk.CssProvider()
-            cssProvider.load_from_data(css.encode("utf-8"))
-            display = Gdk.Display.get_default()
-            styleContext = Gtk.StyleContext()
-            styleContext.add_provider_for_display(
-                display, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER + 1)
         self.db = Database()
         self.cache = CacheDatabase()
         self.playlists = Playlists()
@@ -186,9 +169,25 @@ class Application(Gtk.Application, ApplicationActions, ApplicationCmdline):
             from lollypop.window import Window
             self.init()
             self.__window = Window()
-            self.__window.connect("delete-event", self.__hide_on_delete)
+            # self.__window.connect("delete-event", self.__hide_on_delete)
             self.__window.setup()
             self.__window.show()
+            cssProviderFile = Gio.File.new_for_uri(
+                "resource:///org/gnome/Lollypop/application.css")
+            cssProvider = Gtk.CssProvider()
+            cssProvider.load_from_file(cssProviderFile)
+            display = Gdk.Display.get_default()
+            style_context = self.__window.get_style_context()
+            style_context.add_provider_for_display(
+                    display, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            # Devel version, load devel theme
+            if self.__app_id is None:
+                css = "*:selected{ background-color: red; }"
+                cssProvider = Gtk.CssProvider()
+                cssProvider.load_from_data(css.encode("utf-8"))
+                display = Gdk.Display.get_default()
+                style_context.add_provider_for_display(
+                    display, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER + 1)
             self.player.restore_state()
 
     def quit(self, vacuum=False, wait=100):

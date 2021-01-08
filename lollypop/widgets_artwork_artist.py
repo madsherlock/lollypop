@@ -123,7 +123,7 @@ class ArtistArtworkSearchWidget(ArtworkSearchWidget, SignalsHelper):
             self.__artwork.get_style_context().add_class("circle-icon")
             self.__artwork.set_size_request(ArtSize.SMALL, ArtSize.SMALL)
             self.__artwork.set_from_icon_name("avatar-default-symbolic",
-                                              Gtk.IconSize.BUTTON)
+                                              Gtk.IconSize.NORMAL)
         else:
             self.__artwork.get_style_context().remove_class("circle-icon")
             self.__artwork.set_from_surface(surface)

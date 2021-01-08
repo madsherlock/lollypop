@@ -43,7 +43,7 @@ class View(Gtk.Grid, AdaptiveHelper, FilteringHelper, SignalsHelper):
         self.__placeholder = None
         self.scrolled_value = 0
         self.set_orientation(Gtk.Orientation.VERTICAL)
-        self.set_border_width(0)
+        # self.set_border_width(0)
         self.__new_ids = []
         self._empty_message = _("No items to show")
         self._empty_icon_name = "emblem-music-symbolic"

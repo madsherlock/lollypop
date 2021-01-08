@@ -68,7 +68,7 @@ class SelectionListRow(Gtk.ListBoxRow):
         if self.__rowid == Type.SEPARATOR:
             separator = Gtk.Separator.new(Gtk.Orientation.HORIZONTAL)
             separator.show()
-            self.add(separator)
+            self.set_child(separator)
             self.set_sensitive(False)
             emit_signal(self, "populated")
         else:
@@ -76,16 +76,16 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.__grid.set_column_spacing(7)
             self.__grid.show()
             self.__artwork = Gtk.Image.new()
-            self.__grid.add(self.__artwork)
+            self.__grid.attach(self.__artwork, 0, 0, 1, 1)
             self.__label = Gtk.Label.new()
             self.__label.set_markup(GLib.markup_escape_text(self.__name))
             self.__label.set_property("has-tooltip", True)
             self.__label.connect("query-tooltip", on_query_tooltip)
             self.__label.set_xalign(0)
-            self.__grid.add(self.__label)
+            self.__grid.attach(self.__label, 1, 0, 1, 1)
             if self.__mask & SelectionListMask.ARTISTS:
                 self.__grid.set_margin_end(20)
-            self.add(self.__grid)
+            self.set_child(self.__grid)
             self.set_artwork()
             self.set_mask()
 
@@ -121,7 +121,7 @@ class SelectionListRow(Gtk.ListBoxRow):
             self.__artwork.show()
         elif self.__rowid < 0:
             icon_name = get_icon_name(self.__rowid)
-            self.__artwork.set_from_icon_name(icon_name, Gtk.IconSize.INVALID)
+            self.__artwork.set_from_icon_name(icon_name)
             self.__artwork.set_pixel_size(20)
             self.__artwork.show()
             emit_signal(self, "populated")
@@ -271,20 +271,20 @@ class SelectionList(LazyLoadingView, GesturesHelper):
         self.__scrolled.set_policy(Gtk.PolicyType.NEVER,
                                    Gtk.PolicyType.AUTOMATIC)
         self.__viewport = Gtk.Viewport()
-        self.__scrolled.add(self.__viewport)
+        self.__scrolled.set_child(self.__viewport)
         self.__viewport.show()
-        self.__viewport.add(self._box)
+        self.__viewport.set_child(self._box)
         self.connect("initialized", self.__on_initialized)
         self.get_style_context().add_class("sidebar")
         self.__scrolled.set_vexpand(True)
         if base_mask & SelectionListMask.FASTSCROLL:
             self.__overlay = Gtk.Overlay.new()
             self.__overlay.show()
-            self.__overlay.add(self.__scrolled)
+            self.__overlay.set_child(self.__scrolled)
             self.__fastscroll = FastScroll(self._box,
                                            self.__scrolled)
             self.__overlay.add_overlay(self.__fastscroll)
-            self.add(self.__overlay)
+            self.set_child(self.__overlay)
             App().settings.connect("changed::artist-artwork",
                                    self.__on_artist_artwork_changed)
             App().artist_art.connect("artist-artwork-changed",
@@ -293,15 +293,15 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             self.__overlay = None
             App().settings.connect("changed::show-sidebar-labels",
                                    self.__on_show_sidebar_labels_changed)
-            self.add(self.__scrolled)
+            self.attach(self.__scrolled, 0, 0, 1, 1)
             self.__menu_button = Gtk.Button.new_from_icon_name(
-                "view-more-horizontal-symbolic", Gtk.IconSize.BUTTON)
+                "view-more-horizontal-symbolic")
             self.__menu_button.set_property("halign", Gtk.Align.CENTER)
             self.__menu_button.get_style_context().add_class("no-border")
             self.__menu_button.connect("clicked",
                                        lambda x: self.__popup_menu(None, x))
             self.__menu_button.show()
-            self.add(self.__menu_button)
+            self.attach(self.__menu_button, 0, 0, 1, 1)
         if base_mask & SelectionListMask.SIDEBAR:
             App().window.container.widget.connect("notify::folded",
                                                   self.__on_container_folded)
@@ -340,7 +340,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             Remove id from list
             @param object_id as int
         """
-        for child in self._box.get_children():
+        for child in self._box:
             if child.id == object_id:
                 child.destroy()
                 break
@@ -351,7 +351,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             @param value as (int, str, optional str)
         """
         self._box.set_sort_func(self.__sort_func)
-        ids = [row.id for row in self._box.get_children()]
+        ids = [row.id for row in self._box]
         if value[0] not in ids:
             child = self._get_child(value)
             child.populate()
@@ -366,7 +366,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             @param name as str
         """
         found = False
-        for child in self._box.get_children():
+        for child in self._box:
             if child.id == object_id:
                 child.set_label(name)
                 found = True
@@ -385,11 +385,11 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             self.__fastscroll.clear()
         # Remove not found items
         value_ids = set([v[0] for v in values])
-        for child in self._box.get_children():
+        for child in self._box:
             if child.id not in value_ids:
                 self.remove_value(child.id)
         # Add items which are not already in the list
-        item_ids = set([child.id for child in self._box.get_children()])
+        item_ids = set([child.id for child in self._box])
         for value in values:
             if not value[0] in item_ids:
                 row = self._get_child(value)
@@ -405,7 +405,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
         """
         if ids:
             rows = []
-            for row in self._box.get_children():
+            for row in self._box:
                 if row.id in ids:
                     rows.append(row)
             if rows:
@@ -422,7 +422,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             Clear treeview
         """
         self.stop()
-        for child in self._box.get_children():
+        for child in self._box:
             child.destroy()
         if self.__base_mask & SelectionListMask.FASTSCROLL:
             self.__fastscroll.clear()
@@ -434,7 +434,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
         """
         try:
             self._box.unselect_all()
-            row = self._box.get_children()[0]
+            row = self._box[0]
             self._box.select_row(row)
             row.activate()
         except Exception as e:
@@ -459,7 +459,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             Activated typeahead row
         """
         self._box.unselect_all()
-        for row in self._box.get_children():
+        for row in self._box:
             style_context = row.get_style_context()
             if style_context.has_class("typeahead"):
                 row.activate()
@@ -472,7 +472,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             @return [Gtk.Widget]
         """
         filtered = []
-        for child in self._box.get_children():
+        for child in self._box:
             if isinstance(child, SelectionListRow):
                 filtered.append(child)
         return filtered
@@ -511,7 +511,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             Get items count in list
             @return int
         """
-        return len(self._box.get_children())
+        return len(self._box)
 
     @property
     def selected_ids(self):
@@ -554,7 +554,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
         row = SelectionListRow(rowid, name, sortname,
                                self.mask, self.__height)
         row.show()
-        self._box.add(row)
+        self._box.append(row)
         return row
 
     def _scroll_to_child(self, row):
@@ -607,7 +607,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             Show labels on child
             @param status as bool
         """
-        for row in self._box.get_children():
+        for row in self._box:
             row.set_mask(mask)
 
     def __sort_func(self, row_a, row_b):
@@ -674,7 +674,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
         """
         artist = value if object == App().art else None
         if self.mask & SelectionListMask.ARTISTS:
-            for row in self._box.get_children():
+            for row in self._box:
                 if artist is None:
                     row.set_style(self.__height)
                     row.set_artwork()

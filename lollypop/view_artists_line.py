@@ -42,10 +42,10 @@ class ArtistsLineView(RoundedArtistsView, HorizontalScrollingHelper):
         self._label.set_property("halign", Gtk.Align.START)
         self._backward_button = Gtk.Button.new_from_icon_name(
                                                     "go-previous-symbolic",
-                                                    Gtk.IconSize.BUTTON)
+                                                    Gtk.IconSize.NORMAL)
         self._forward_button = Gtk.Button.new_from_icon_name(
                                                    "go-next-symbolic",
-                                                   Gtk.IconSize.BUTTON)
+                                                   Gtk.IconSize.NORMAL)
         self._backward_button.get_style_context().add_class("menu-button")
         self._forward_button.get_style_context().add_class("menu-button")
         header = Gtk.Grid()

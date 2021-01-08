@@ -271,21 +271,21 @@ class ToolbarEnd(Gtk.Widget):
         if shuffle:
             self.__playback_button_image.set_from_icon_name(
                 "media-playlist-shuffle-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.NORMAL)
         elif repeat == Repeat.TRACK:
             self.__playback_button_image.get_style_context().remove_class(
                 "selected")
             self.__playback_button_image.set_from_icon_name(
                 "media-playlist-repeat-song-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.NORMAL)
         elif repeat == Repeat.ALL:
             self.__playback_button_image.set_from_icon_name(
                 "media-playlist-repeat-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.NORMAL)
         else:
             self.__playback_button_image.set_from_icon_name(
                 "media-playlist-consecutive-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.NORMAL)
 
     def __on_party_mode_change_state(self, action, value):
         """

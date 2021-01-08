@@ -34,7 +34,7 @@ class DeviceRow(Handy.ActionRow):
         label.set_ellipsize(Pango.EllipsizeMode.END)
         label.show()
         button = Gtk.Button.new_from_icon_name("user-trash-symbolic",
-                                               Gtk.IconSize.BUTTON)
+                                               Gtk.IconSize.NORMAL)
         button.connect("clicked", self.__on_button_clicked)
         button.get_style_context().add_class("menu-button")
         button.show()

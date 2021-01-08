@@ -307,7 +307,7 @@ class MenuBuilder(Gtk.Stack, SignalsHelper):
         artwork.set_pixel_size(ArtSize.SMALL)
         artwork.show()
         close_image = Gtk.Image.new_from_icon_name("pan-up-symbolic",
-                                                   Gtk.IconSize.BUTTON)
+                                                   Gtk.IconSize.NORMAL)
         close_image.show()
         grid = Gtk.Grid()
         grid.set_column_spacing(MARGIN)
@@ -335,7 +335,7 @@ class MenuBuilder(Gtk.Stack, SignalsHelper):
         label.show()
         artwork = Gtk.Image.new()
         close_image = Gtk.Image.new_from_icon_name("pan-up-symbolic",
-                                                   Gtk.IconSize.BUTTON)
+                                                   Gtk.IconSize.NORMAL)
         close_image.show()
         grid = Gtk.Grid()
         grid.set_halign(Gtk.Align.START)
@@ -372,7 +372,7 @@ class MenuBuilder(Gtk.Stack, SignalsHelper):
         label.show()
         artwork = Gtk.Image.new()
         close_image = Gtk.Image.new_from_icon_name("pan-up-symbolic",
-                                                   Gtk.IconSize.BUTTON)
+                                                   Gtk.IconSize.NORMAL)
         close_image.show()
         grid = Gtk.Grid()
         grid.set_column_spacing(MARGIN)
@@ -423,7 +423,7 @@ class MenuBuilder(Gtk.Stack, SignalsHelper):
         artwork = Gtk.Image.new()
         artwork.get_style_context().add_class("light-background")
         close_image = Gtk.Image.new_from_icon_name("pan-up-symbolic",
-                                                   Gtk.IconSize.BUTTON)
+                                                   Gtk.IconSize.NORMAL)
         close_image.show()
         grid = Gtk.Grid()
         grid.set_column_spacing(MARGIN)
@@ -448,7 +448,7 @@ class MenuBuilder(Gtk.Stack, SignalsHelper):
         """
         if surface is None:
             artwork.set_from_icon_name("folder-music-symbolic",
-                                       Gtk.IconSize.BUTTON)
+                                       Gtk.IconSize.NORMAL)
         else:
             artwork.set_from_surface(surface)
         artwork.show()

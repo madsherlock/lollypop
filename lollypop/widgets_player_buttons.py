@@ -31,7 +31,7 @@ class PlayButton(Gtk.Button):
         self.__spinner = Gtk.Spinner.new()
         self.__spinner.show()
         self.__image = Gtk.Image.new_from_icon_name(
-            "media-playback-start-symbolic", Gtk.IconSize.BUTTON)
+            "media-playback-start-symbolic", Gtk.IconSize.NORMAL)
         self.__image.show()
         self.set_image(self.__image)
 
@@ -70,14 +70,14 @@ class ButtonsPlayerWidget(Gtk.Box, SignalsHelper):
         Gtk.Box.__init__(self)
         self.__prev_button_timeout_id = None
         self.__prev_button = Gtk.Button.new_from_icon_name(
-            "media-skip-backward-symbolic", Gtk.IconSize.BUTTON)
+            "media-skip-backward-symbolic", Gtk.IconSize.NORMAL)
         self.__prev_button.show()
         self.__prev_button.connect("clicked", self.__on_prev_button_clicked)
         self.__play_button = PlayButton()
         self.__play_button.show()
         self.__play_button.connect("clicked", self.__on_play_button_clicked)
         self.__next_button = Gtk.Button.new_from_icon_name(
-            "media-skip-forward-symbolic", Gtk.IconSize.BUTTON)
+            "media-skip-forward-symbolic", Gtk.IconSize.NORMAL)
         self.__next_button.show()
         self.__next_button.connect("clicked", self.__on_next_button_clicked)
         self.__play_button.set_sensitive(False)
@@ -124,12 +124,12 @@ class ButtonsPlayerWidget(Gtk.Box, SignalsHelper):
         def update_button():
             self.__prev_button_timeout_id = None
             self.__prev_button.get_image().set_from_icon_name(
-                "media-seek-backward-symbolic", Gtk.IconSize.BUTTON)
+                "media-seek-backward-symbolic", Gtk.IconSize.NORMAL)
 
         if self.__prev_button_timeout_id is not None:
             GLib.source_remove(self.__prev_button_timeout_id)
         self.__prev_button.get_image().set_from_icon_name(
-            "media-skip-backward-symbolic", Gtk.IconSize.BUTTON)
+            "media-skip-backward-symbolic", Gtk.IconSize.NORMAL)
         self.__prev_button_timeout_id = GLib.timeout_add(
             App().settings.get_value("previous-threshold").get_int32(),
             update_button)
@@ -180,11 +180,11 @@ class ButtonsPlayerWidget(Gtk.Box, SignalsHelper):
         """
         if player.is_playing:
             self.__play_button.image.set_from_icon_name(
-                "media-playback-pause-symbolic", Gtk.IconSize.BUTTON)
+                "media-playback-pause-symbolic", Gtk.IconSize.NORMAL)
             self.__play_button.set_tooltip_text(_("Pause"))
         else:
             self.__play_button.image.set_from_icon_name(
-                "media-playback-start-symbolic", Gtk.IconSize.BUTTON)
+                "media-playback-start-symbolic", Gtk.IconSize.NORMAL)
             self.__play_button.set_tooltip_text(_("Play"))
 
     def _on_loading_changed(self, player, status, track):

@@ -122,10 +122,10 @@ class MiniPlayer(Handy.WindowHandle, SizeAllocationHelper, SignalsHelper):
             self.__artwork_widget.update(True)
             if App().lookup_action("miniplayer").get_state():
                 self.__artwork_button.set_from_icon_name(
-                    "view-fullscreen-symbolic", Gtk.IconSize.BUTTON)
+                    "view-fullscreen-symbolic", Gtk.IconSize.NORMAL)
             else:
                 self.__artwork_button.set_from_icon_name(
-                    "pan-down-symbolic", Gtk.IconSize.BUTTON)
+                    "pan-down-symbolic", Gtk.IconSize.NORMAL)
         else:
             self.__revealer.set_reveal_child(False)
             emit_signal(self, "revealed", False)

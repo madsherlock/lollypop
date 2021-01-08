@@ -41,7 +41,7 @@ class AppNotification(Gtk.Revealer):
             button.set_property("valign", Gtk.Align.START)
             widget.add(button)
         button = Gtk.Button.new_from_icon_name("window-close-symbolic",
-                                               Gtk.IconSize.BUTTON)
+                                               Gtk.IconSize.NORMAL)
         button.connect("clicked", self.__on_button_clicked, None)
         button.set_property("valign", Gtk.Align.START)
         widget.add(button)

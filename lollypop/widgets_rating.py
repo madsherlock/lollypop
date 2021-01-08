@@ -25,7 +25,7 @@ class RatingWidget(Gtk.Widget):
         Rate widget
     """
 
-    def __init__(self, object, icon_size=Gtk.IconSize.BUTTON):
+    def __init__(self, object, icon_size=Gtk.IconSize.NORMAL):
         """
             Init widget
             @param object as Track/Album
@@ -35,6 +35,7 @@ class RatingWidget(Gtk.Widget):
         Gtk.Widget.__init__(self)
         self.__object = object
         builder = Gtk.Builder()
+        # FIXME remove this, really simple widget
         builder.add_from_resource("/org/gnome/Lollypop/RatingWidget.ui")
         builder.connect_signals(self)
         self.__empty_star = builder.get_object("empty_star")
@@ -62,6 +63,7 @@ class RatingWidget(Gtk.Widget):
 #######################
 # PROTECTED           #
 #######################
+    # FIXME
     def _on_enter_notify_event(self, widget, event):
         """
             Update star opacity
@@ -84,6 +86,7 @@ class RatingWidget(Gtk.Widget):
             if star == event_star:
                 found = True
 
+    # FIXME
     def _on_leave_notify_event(self, widget, event):
         """
             Update star opacity
@@ -113,6 +116,7 @@ class RatingWidget(Gtk.Widget):
                 self._stars[idx].set_opacity(0.2)
                 self._stars[idx].get_style_context().remove_class("selected")
 
+    # FIXME
     def _on_button_release_event(self, widget, event):
         """
             Set album popularity

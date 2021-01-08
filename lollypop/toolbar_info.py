@@ -13,7 +13,7 @@
 from gi.repository import Gtk, GLib
 
 
-from lollypop.utils import set_cursor_type, popup_widget
+from lollypop.utils import popup_widget
 from lollypop.widgets_player_artwork import ArtworkPlayerWidget
 from lollypop.widgets_player_label import LabelPlayerWidget
 from lollypop.define import App, ArtBehaviour, StorageType, MARGIN_SMALL
@@ -34,13 +34,7 @@ class ToolbarInfo(Gtk.Widget, GesturesHelper):
         self.__width = 0
         horizontal_box = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 15)
         horizontal_box.show()
-        self.__eventbox = Gtk.EventBox.new()
-        self.__eventbox.add(horizontal_box)
-        self.__eventbox.set_property("halign", Gtk.Align.START)
-        self.__eventbox.show()
-        self.__eventbox.connect("realize", set_cursor_type)
-        self.add(self.__eventbox)
-        GesturesHelper.__init__(self, self.__eventbox)
+        GesturesHelper.__init__(self, self)
         self.special_headerbar_hack()
 
         self.__label = LabelPlayerWidget()

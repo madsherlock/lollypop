@@ -187,6 +187,7 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
         else:
             self.__stack.set_visible_child_name("text")
 
+    # FIXME
     def _on_enter_notify_event(self, widget, event):
         """
             Update star opacity
@@ -209,6 +210,7 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
             if star == event_star:
                 found = True
 
+    # FIXME
     def _on_leave_notify_event(self, widget, event):
         """
             Update star opacity
@@ -231,6 +233,7 @@ class SmartPlaylistRow(Gtk.ListBoxRow):
                 self._stars[idx].set_opacity(0.2)
                 self._stars[idx].get_style_context().remove_class("selected")
 
+    # FIXME
     def _on_button_release_event(self, widget, event):
         """
             Set album popularity

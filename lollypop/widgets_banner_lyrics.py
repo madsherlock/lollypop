@@ -43,7 +43,7 @@ class LyricsBannerWidget(BannerWidget, SignalsHelper):
         self.__title_label.set_vexpand(True)
         self.__translate_button = Gtk.ToggleButton.new()
         image = Gtk.Image.new_from_icon_name(
-            "accessories-dictionary-symbolic", Gtk.IconSize.BUTTON)
+            "accessories-dictionary-symbolic", Gtk.IconSize.NORMAL)
         image.show()
         self.__translate_button.set_image(image)
         self.__translate_button.show()

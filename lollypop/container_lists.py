@@ -16,7 +16,7 @@ from lollypop.logger import Logger
 from lollypop.selectionlist import SelectionList
 from lollypop.define import App, Type, SelectionListMask, StorageType, ViewType
 from lollypop.shown import ShownLists
-from lollypop.helper_gestures import GesturesHelper
+# from lollypop.helper_gestures import GesturesHelper
 from lollypop.view import View
 from lollypop.utils import emit_signal, get_default_storage_type
 
@@ -90,21 +90,20 @@ class ListsContainer:
                 self._hide_right_list()
 
         if self.__right_list is None:
-            eventbox = Gtk.EventBox.new()
-            eventbox.set_size_request(50, -1)
-            eventbox.show()
-            self.__right_list_grid = Gtk.Grid()
+            # eventbox.set_size_request(50, -1)
+            # eventbox.show()
+            # self.__right_list_grid = Gtk.Grid()
             style_context = self.__right_list_grid.get_style_context()
             style_context.add_class("left-gradient")
             style_context.add_class("opacity-transition-fast")
             self.__right_list = SelectionList(SelectionListMask.FASTSCROLL)
             self.__right_list.show()
             self.__right_list.scrolled.set_size_request(250, -1)
-            self.__gesture = GesturesHelper(
-                eventbox, primary_press_callback=self._hide_right_list)
+            # self.__gesture = GesturesHelper(
+            #    eventbox, primary_press_callback=self._hide_right_list)
             self.__right_list.listbox.connect("row-activated",
                                               self.__on_right_list_activated)
-            self.__right_list_grid.add(eventbox)
+            # self.__right_list_grid.add(eventbox)
             self.__right_list_grid.add(self.__right_list)
             self.__left_list.overlay.add_overlay(self.__right_list_grid)
             self.__left_list.connect("unmap", on_unmap)

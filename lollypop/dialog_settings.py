@@ -277,7 +277,7 @@ class SettingsDialog:
         if uri is not None:
             chooser.set_uri(uri)
         button = Gtk.Button.new_from_icon_name("list-remove-symbolic",
-                                               Gtk.IconSize.BUTTON)
+                                               Gtk.IconSize.NORMAL)
         button.show()
         button.set_valign(Gtk.Align.CENTER)
         row = Handy.ActionRow()

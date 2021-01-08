@@ -18,26 +18,21 @@ from lollypop.define import App, Type, LovedFlags
 from lollypop.objects_track import Track
 
 
-class LovedWidget(Gtk.Widget):
+class LovedWidget(Gtk.Image):
     """
         Loved widget
     """
 
-    def __init__(self, object, icon_size=Gtk.IconSize.BUTTON):
+    def __init__(self, object, icon_size=Gtk.IconSize.NORMAL):
         """
             Init widget
             @param object as Album/Track
             @param icon_size as Gtk.IconSize
         """
-        Gtk.Widget.__init__(self)
+        Gtk.Image.__init__(self)
         self.__object = object
         self.__icon_size = icon_size
         self.__timeout_id = None
-        builder = Gtk.Builder()
-        builder.add_from_resource("/org/gnome/Lollypop/LovedWidget.ui")
-        builder.connect_signals(self)
-        self.__artwork = builder.get_object("artwork")
-        self.add(builder.get_object("widget"))
         self.__set_artwork(self.__object.loved)
 
     def set_icon_size(self, icon_size):
@@ -51,6 +46,7 @@ class LovedWidget(Gtk.Widget):
 #######################
 # PROTECTED           #
 #######################
+    # FIXME
     def _on_enter_notify_event(self, widget, event):
         """
             Update love opacity
@@ -63,6 +59,7 @@ class LovedWidget(Gtk.Widget):
             loved = LovedFlags.LOVED
         self.__set_artwork(loved)
 
+    # FIXME
     def _on_leave_notify_event(self, widget, event):
         """
             Update love opacity
@@ -71,6 +68,7 @@ class LovedWidget(Gtk.Widget):
         """
         self.__set_artwork(self.__object.loved)
 
+    # FIXME
     def _on_button_release_event(self, widget, event):
         """
             Toggle loved status
@@ -105,11 +103,11 @@ class LovedWidget(Gtk.Widget):
         """
         if flags & LovedFlags.LOVED:
             self.set_tooltip_text(_("Like"))
-            self.__artwork.set_opacity(0.8)
-            self.__artwork.set_from_icon_name("emblem-favorite-symbolic",
-                                              self.__icon_size)
+            self.set_opacity(0.8)
+            self.set_from_icon_name("emblem-favorite-symbolic",
+                                    self.__icon_size)
         else:
             self.set_tooltip_text(_("Allow playback"))
-            self.__artwork.set_opacity(0.2)
-            self.__artwork.set_from_icon_name("emblem-favorite-symbolic",
-                                              self.__icon_size)
+            self.set_opacity(0.2)
+            self.set_from_icon_name("emblem-favorite-symbolic",
+                                    self.__icon_size)

@@ -83,11 +83,11 @@ class AlbumBannerWidget(BannerWidget, SignalsHelper):
         self.__year_label.set_halign(Gtk.Align.END)
         self.__year_label.set_hexpand(True)
         self.__play_button = Gtk.Button.new_from_icon_name(
-            "media-playback-start-symbolic", Gtk.IconSize.BUTTON)
+            "media-playback-start-symbolic", Gtk.IconSize.NORMAL)
         self.__add_button = Gtk.Button.new_from_icon_name(
-            "list-add-symbolic", Gtk.IconSize.BUTTON)
+            "list-add-symbolic", Gtk.IconSize.NORMAL)
         self.__menu_button = Gtk.Button.new_from_icon_name(
-            "view-more-symbolic", Gtk.IconSize.BUTTON)
+            "view-more-symbolic", Gtk.IconSize.NORMAL)
         self.__play_button.connect("clicked", self.__on_play_button_clicked)
         self.__add_button.connect("clicked", self.__on_add_button_clicked)
         self.__menu_button.connect("clicked", self.__on_menu_button_clicked)
@@ -294,10 +294,10 @@ class AlbumBannerWidget(BannerWidget, SignalsHelper):
                     break
         if missing:
             self.__add_button.get_image().set_from_icon_name(
-                "list-add-symbolic", Gtk.IconSize.BUTTON)
+                "list-add-symbolic", Gtk.IconSize.NORMAL)
         else:
             self.__add_button.get_image().set_from_icon_name(
-                "list-remove-symbolic", Gtk.IconSize.BUTTON)
+                "list-remove-symbolic", Gtk.IconSize.NORMAL)
 
     def __set_internal_size(self):
         """
@@ -315,7 +315,7 @@ class AlbumBannerWidget(BannerWidget, SignalsHelper):
 
         if App().window.folded:
             art_size = ArtSize.MEDIUM
-            icon_size = Gtk.IconSize.BUTTON
+            icon_size = Gtk.IconSize.NORMAL
             cls_title = "text-medium"
             cls_others = "text-medium"
         elif not self.view_type & ViewType.OVERLAY:

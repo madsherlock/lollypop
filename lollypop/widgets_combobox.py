@@ -69,7 +69,7 @@ class ComboBox(Gtk.MenuButton):
         self.__label = Gtk.Label.new()
         self.__label.show()
         image = Gtk.Image.new_from_icon_name("pan-down-symbolic",
-                                             Gtk.IconSize.BUTTON)
+                                             Gtk.IconSize.NORMAL)
         image.show()
         grid.add(self.__label)
         grid.add(image)

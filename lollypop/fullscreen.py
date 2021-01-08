@@ -89,12 +89,12 @@ class FullScreen(Gtk.Window, SignalsHelper):
         self.__label_widget.set_hexpand(True)
         self.__label_widget.set_vexpand(True)
         self.__label_widget.set_justify(Gtk.Justification.CENTER)
-        eventbox = Gtk.EventBox.new()
-        eventbox.show()
-        eventbox.connect("button-release-event",
-                         self.__on_image_button_release_event)
-        eventbox.connect("realize", self.__on_image_realize)
-        eventbox.add(self.__artwork_widget)
+        # FIXME
+        # eventbox.show()
+        # eventbox.connect("button-release-event",
+        #                 self.__on_image_button_release_event)
+        # eventbox.connect("realize", self.__on_image_realize)
+        # eventbox.add(self.__artwork_widget)
         self.__revealer = builder.get_object("revealer")
         self.__datetime = builder.get_object("datetime")
         self.__overlay_grid = builder.get_object("overlay_grid")
@@ -103,10 +103,10 @@ class FullScreen(Gtk.Window, SignalsHelper):
             self.__overlay_grid.attach(self.__buttons_widget, 0, 4, 2, 1)
             self.__overlay_grid.attach(self.__label_widget, 0, 2, 2, 1)
             self.__overlay_grid.attach(self.__progress_widget, 0, 3, 2, 1)
-            self.__overlay_grid.attach(eventbox, 2, 2, 1, 3)
-            eventbox.set_margin_end(MARGIN_BIG)
-            eventbox.set_property("valign", Gtk.Align.END)
-            eventbox.set_property("halign", Gtk.Align.END)
+            self.__overlay_grid.attach(self.__artwork_widget, 2, 2, 1, 3)
+            self.__artwork_widget.set_margin_end(MARGIN_BIG)
+            self.__artwork_widget.set_property("valign", Gtk.Align.END)
+            self.__artwork_widget.set_property("halign", Gtk.Align.END)
             self.__artwork_widget.set_margin_end(MARGIN_BIG)
             self.__artwork_widget.set_margin_bottom(MARGIN_BIG)
             self.__label_widget.set_property("valign", Gtk.Align.END)
@@ -115,8 +115,8 @@ class FullScreen(Gtk.Window, SignalsHelper):
             self.__overlay_grid.attach(self.__buttons_widget, 0, 4, 3, 1)
             self.__overlay_grid.attach(self.__label_widget, 0, 2, 3, 1)
             self.__overlay_grid.attach(self.__progress_widget, 0, 3, 3, 1)
-            self.__overlay_grid.attach(eventbox, 0, 1, 3, 1)
-            eventbox.set_vexpand(True)
+            self.__overlay_grid.attach(self.__artwork_widget, 0, 1, 3, 1)
+            self.__artwork_widget.set_vexpand(True)
         close_btn = builder.get_object("close_btn")
         preferences = Gio.Settings.new("org.gnome.desktop.wm.preferences")
         layout = preferences.get_value("button-layout").get_string()
@@ -130,7 +130,7 @@ class FullScreen(Gtk.Window, SignalsHelper):
         self.connect("key-release-event", self.__on_key_release_event)
         # Add a navigation widget on the right
         self.__back_button = Gtk.Button.new_from_icon_name(
-            "go-previous-symbolic", Gtk.IconSize.BUTTON)
+            "go-previous-symbolic", Gtk.IconSize.NORMAL)
         self.__back_button.set_sensitive(False)
         self.__back_button.set_relief(Gtk.ReliefStyle.NONE)
         self.__back_button.set_property("valign", Gtk.Align.START)
@@ -238,11 +238,11 @@ class FullScreen(Gtk.Window, SignalsHelper):
         if self.__revealer.get_reveal_child():
             self.__revealer.set_reveal_child(False)
             button.get_image().set_from_icon_name("pan-start-symbolic",
-                                                  Gtk.IconSize.BUTTON)
+                                                  Gtk.IconSize.NORMAL)
         else:
             self.__revealer.set_reveal_child(True)
             button.get_image().set_from_icon_name("pan-end-symbolic",
-                                                  Gtk.IconSize.BUTTON)
+                                                  Gtk.IconSize.NORMAL)
 
     def _on_current_changed(self, player):
         """

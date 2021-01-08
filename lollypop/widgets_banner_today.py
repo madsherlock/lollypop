@@ -90,9 +90,9 @@ class TodayBannerWidget(BannerWidget, SignalsHelper):
         play_button.set_property("halign", Gtk.Align.END)
         play_button.set_hexpand(True)
         play_button.get_image().set_from_icon_name(
-            "media-playback-start-symbolic", Gtk.IconSize.BUTTON)
+            "media-playback-start-symbolic", Gtk.IconSize.NORMAL)
         menu_button = Gtk.Button.new_from_icon_name(
-            "view-more-symbolic", Gtk.IconSize.BUTTON)
+            "view-more-symbolic", Gtk.IconSize.NORMAL)
         menu_button.show()
         menu_button.set_property("valign", Gtk.Align.CENTER)
         menu_button.get_style_context().add_class("banner-button")

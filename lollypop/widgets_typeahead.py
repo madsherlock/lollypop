@@ -40,15 +40,15 @@ class TypeAheadWidget(Gtk.Revealer):
         self.__entry.set_icon_from_icon_name(Gtk.EntryIconPosition.PRIMARY,
                                              "edit-find-symbolic")
         self.__next_button = Gtk.Button.new_from_icon_name(
-            "go-down-symbolic", Gtk.IconSize.BUTTON
+            "go-down-symbolic", Gtk.IconSize.NORMAL
         )
         self.__next_button.show()
         self.__prev_button = Gtk.Button.new_from_icon_name(
-            "go-up-symbolic", Gtk.IconSize.BUTTON
+            "go-up-symbolic", Gtk.IconSize.NORMAL
         )
         self.__prev_button.show()
         self.__close_button = Gtk.Button.new_from_icon_name(
-            "window-close-symbolic", Gtk.IconSize.BUTTON
+            "window-close-symbolic", Gtk.IconSize.NORMAL
         )
         self.__close_button.show()
         self.__close_button.set_halign(Gtk.Align.END)

@@ -27,14 +27,7 @@
     <property name="row-spacing">10</property>
     <property name="column-spacing">15</property>
     <child>
-      <object class="GtkEventBox" id="label_event">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="halign">start</property>
-        <property name="valign">center</property>
-        <signal name="button-release-event" handler="_on_label_button_release" swapped="no"/>
-        <child>
-          <object class="GtkLabel" id="artist">
+      <object class="GtkLabel" id="artist">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="halign">start</property>
@@ -49,8 +42,6 @@
               <attribute name="weight" value="bold"/>
             </attributes>
           </object>
-        </child>
-      </object>
       <packing>
         <property name="left-attach">1</property>
         <property name="top-attach">0</property>
@@ -58,21 +49,12 @@
       </packing>
     </child>
     <child>
-      <object class="GtkEventBox" id="artwork_event">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="halign">start</property>
-        <property name="valign">center</property>
-        <signal name="button-release-event" handler="_on_badge_button_release" swapped="no"/>
-        <child>
-          <object class="GtkImage" id="badge_artwork">
+      <object class="GtkImage" id="badge_artwork">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="valign">center</property>
             <property name="vexpand">True</property>
           </object>
-        </child>
-      </object>
       <packing>
         <property name="left-attach">0</property>
         <property name="top-attach">0</property>

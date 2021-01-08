@@ -45,10 +45,10 @@ class AlbumsLineView(AlbumsBoxView, HorizontalScrollingHelper):
         self.__update_label(App().window.folded)
         self._backward_button = Gtk.Button.new_from_icon_name(
                                                         "go-previous-symbolic",
-                                                        Gtk.IconSize.BUTTON)
+                                                        Gtk.IconSize.NORMAL)
         self._forward_button = Gtk.Button.new_from_icon_name(
                                                        "go-next-symbolic",
-                                                       Gtk.IconSize.BUTTON)
+                                                       Gtk.IconSize.NORMAL)
         self._backward_button.get_style_context().add_class("menu-button")
         self._forward_button.get_style_context().add_class("menu-button")
         header = Gtk.Grid()

@@ -47,11 +47,9 @@ class FastScroll(Gtk.ScrolledWindow):
         self.__grid.set_orientation(Gtk.Orientation.VERTICAL)
         self.__grid.set_property("valign", Gtk.Align.START)
         self.__grid.show()
-        eventbox = Gtk.EventBox()
-        eventbox.add(self.__grid)
-        eventbox.connect("button-press-event", self.__on_button_press_event)
-        eventbox.show()
-        self.add(eventbox)
+        # FIXME
+        # eventbox.connect("button-press-event", self.__on_button_press_event)
+        self.add(self.__grid)
         self.__main_scrolled.get_vadjustment().connect(
             "value_changed", self.__on_value_changed)
         self.connect("scroll-event", self.__on_scroll_event)

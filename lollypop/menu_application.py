@@ -85,6 +85,7 @@ class ApplicationMenu(Gtk.Widget, SignalsHelper):
         if player.volume != volume:
             self.__volume.set_value(player.volume)
 
+    # FIXME GestureHelper
     def _mute_volume(self, event_box, event_button):
         """
             Mute the volume

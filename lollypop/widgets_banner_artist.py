@@ -118,6 +118,7 @@ class ArtistBannerWidget(BannerWidget, SignalsHelper):
         """
         self.__set_artwork()
 
+    # FIXME
     def _on_label_button_release(self, eventbox, event):
         """
             Show artists information
@@ -172,6 +173,7 @@ class ArtistBannerWidget(BannerWidget, SignalsHelper):
             menu_widget.add_widget(menu_ext2)
         popup_widget(menu_widget, button, None, None, button)
 
+    # FIXME
     def _on_badge_button_release(self, eventbox, event):
         """
             Show artist artwork manager
@@ -298,14 +300,14 @@ class ArtistBannerWidget(BannerWidget, SignalsHelper):
             self.__add_button.set_tooltip_text(_("Add to current playlist"))
             self.__add_button.get_image().set_from_icon_name(
                 "list-add-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.NORMAL)
         else:
             # Translators: artist context
             self.__add_button.set_tooltip_text(
                 _("Remove from current playlist"))
             self.__add_button.get_image().set_from_icon_name(
                 "list-remove-symbolic",
-                Gtk.IconSize.BUTTON)
+                Gtk.IconSize.NORMAL)
 
     def __on_badge_artist_artwork(self, surface, art_size):
         """

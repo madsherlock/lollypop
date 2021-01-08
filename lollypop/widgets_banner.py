@@ -10,7 +10,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk, Gdk, GObject
+from gi.repository import Gtk, GObject
 
 from lollypop.define import ArtSize, ViewType, MARGIN, App
 from lollypop.utils import emit_signal
@@ -71,13 +71,9 @@ class BannerWidget(Gtk.Revealer, SizeAllocationHelper):
                 self._artwork.set_opacity(0.99)
             self.get_style_context().add_class("default-banner")
             self._artwork.get_style_context().add_class("default-banner")
-            eventbox = Gtk.EventBox.new()
-            eventbox.show()
-            eventbox.add_events(Gdk.EventMask.ALL_EVENTS_MASK)
-            eventbox.add(self._artwork)
-            self._overlay.add(eventbox)
+            self._overlay.add(self._artwork)
             self.__event_controller = Gtk.EventControllerScroll.new(
-                eventbox, Gtk.EventControllerScrollFlags.BOTH_AXES)
+                self._artwork, Gtk.EventControllerScrollFlags.BOTH_AXES)
             self.__event_controller.set_propagation_phase(
                 Gtk.PropagationPhase.TARGET)
             self.__event_controller.connect("scroll", self.__on_scroll)
