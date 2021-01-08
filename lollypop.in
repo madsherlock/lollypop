@@ -32,7 +32,7 @@ def install_excepthook():
     sys.excepthook = new_hook
 
 if __name__ == "__main__":
-    install_excepthook()
+    #install_excepthook()
 
     locale.bindtextdomain('lollypop', localedir)
     locale.textdomain('lollypop')
