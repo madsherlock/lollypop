@@ -284,7 +284,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             self.__fastscroll = FastScroll(self._box,
                                            self.__scrolled)
             self.__overlay.add_overlay(self.__fastscroll)
-            self.set_child(self.__overlay)
+            self.attach(self.__overlay, 0, 0, 1, 1)
             App().settings.connect("changed::artist-artwork",
                                    self.__on_artist_artwork_changed)
             App().artist_art.connect("artist-artwork-changed",
@@ -301,7 +301,7 @@ class SelectionList(LazyLoadingView, GesturesHelper):
             self.__menu_button.connect("clicked",
                                        lambda x: self.__popup_menu(None, x))
             self.__menu_button.show()
-            self.attach(self.__menu_button, 0, 0, 1, 1)
+            self.attach(self.__menu_button, 0, 1, 1, 1)
         if base_mask & SelectionListMask.SIDEBAR:
             App().window.container.widget.connect("notify::folded",
                                                   self.__on_container_folded)

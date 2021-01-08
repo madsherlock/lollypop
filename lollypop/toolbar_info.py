@@ -42,8 +42,8 @@ class ToolbarInfo(Gtk.Widget, GesturesHelper):
                                              ArtBehaviour.CACHE)
         self.__artwork.set_property("has-tooltip", True)
         self.__artwork.set_margin_top(1)
-        horizontal_box.pack_start(self.__artwork, False, False, 0)
-        horizontal_box.pack_start(self.__label, False, False, 0)
+        horizontal_box.append(self.__artwork)
+        horizontal_box.append(self.__label)
         self.set_margin_start(MARGIN_SMALL)
         self.connect("realize", self.__on_realize)
 

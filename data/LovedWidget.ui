@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk" version="4.0"/>
   <object class="GtkEventBox" id="widget">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -11,8 +10,7 @@
     <signal name="leave-notify-event" handler="_on_leave_notify_event" swapped="no"/>
     <child>
       <object class="GtkImage" id="artwork">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can_focus">0</property>
         <style>
           <class name="touch-widget"/>
         </style>

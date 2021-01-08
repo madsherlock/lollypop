@@ -80,7 +80,7 @@ class Container(Gtk.Overlay, NotificationContainer,
         self.__widget.append(self.__sub_widget)
         self.__widget.set_visible_child(self.__sub_widget)
         self.__sub_widget.set_visible_child(self.__grid_view)
-        self.add(self.__widget)
+        self.set_child(self.__widget)
         FilterContainer.__init__(self)
 
     def stop(self):

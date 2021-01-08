@@ -104,7 +104,7 @@ class ToolbarEnd(Gtk.Widget):
         self.__devices_popover.connect("content-changed",
                                        self.__on_devices_content_changed)
         self.__devices_popover.populate()
-        builder.connect_signals(self)
+        # builder.connect_signals(self)
         window.container.widget.connect("notify::folded",
                                         self.__on_container_folded)
         window.container.connect("can-go-back-changed",

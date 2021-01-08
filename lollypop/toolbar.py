@@ -37,7 +37,6 @@ class Toolbar(Handy.HeaderBar, SizeAllocationHelper, SignalsHelper):
         SizeAllocationHelper.__init__(self)
         self.__width = Size.MINI
         self.__timeout_id = None
-        self.set_title("Lollypop")
         self.__toolbar_playback = ToolbarPlayback(window)
         self.__toolbar_playback.show()
         self.__toolbar_info = ToolbarInfo()

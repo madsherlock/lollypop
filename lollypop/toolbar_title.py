@@ -10,12 +10,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gtk
-
 from lollypop.widgets_player_progress import ProgressPlayerWidget
 
 
-class ToolbarTitle(Gtk.Widget):
+class ToolbarTitle(ProgressPlayerWidget):
     """
         Title toolbar
     """
@@ -24,10 +22,7 @@ class ToolbarTitle(Gtk.Widget):
         """
             Init toolbar
         """
-        Gtk.Widget.__init__(self)
-        progress_widget = ProgressPlayerWidget()
-        progress_widget.show()
-        self.add(progress_widget)
+        ProgressPlayerWidget.__init__(self)
 
     def set_width(self, width):
         """

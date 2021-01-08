@@ -49,10 +49,11 @@ class FastScroll(Gtk.ScrolledWindow):
         self.__grid.show()
         # FIXME
         # eventbox.connect("button-press-event", self.__on_button_press_event)
-        self.add(self.__grid)
+        self.set_child(self.__grid)
         self.__main_scrolled.get_vadjustment().connect(
             "value_changed", self.__on_value_changed)
-        self.connect("scroll-event", self.__on_scroll_event)
+        # FIXME
+        # self.connect("scroll-event", self.__on_scroll_event)
 
     def clear(self):
         """

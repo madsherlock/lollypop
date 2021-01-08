@@ -28,14 +28,14 @@ class ToolbarPlayback(Gtk.Box):
         """
         Gtk.Box.__init__(self)
         self.__back_button = Gtk.Button.new_from_icon_name(
-            "go-previous-symbolic", Gtk.IconSize.NORMAL)
+            "go-previous-symbolic")
         self.__back_button.show()
         self.__back_button.connect("clicked", self.__on_back_button_clicked)
         self.__player_buttons = ButtonsPlayerWidget()
         self.__player_buttons.show()
         self.set_spacing(10)
-        self.pack_start(self.__back_button, False, False, 0)
-        self.pack_start(self.__player_buttons, False, False, 0)
+        self.append(self.__back_button)
+        self.append(self.__player_buttons)
         window.container.connect("can-go-back-changed",
                                  self.__on_can_go_back_changed)
 

@@ -15,21 +15,17 @@ from gi.repository import GLib
 
 class SizeAllocationHelper:
     """
-        Listen to size-allocate signal and ignore unwanted allocations
+        Handle widget resizing smoothly
     """
 
     def __init__(self, use_parent=False):
         """
             Init helper
-            @param use_parent as bool: follow parent size allocation
+            @param use_parent as bool: follow parent sizing
         """
-        self.__allocation_timeout_id = None
+        self.__resize_timeout_id = None
         self.__width = self.__height = 0
-        if use_parent:
-            parent = self.get_parent()
-            parent.connect("size-allocate", self.__on_size_allocate)
-        else:
-            self.connect("size-allocate", self.__on_size_allocate)
+        # FIXME
 
     @property
     def width(self):
@@ -50,44 +46,49 @@ class SizeAllocationHelper:
 #######################
 # PROTECTED           #
 #######################
-    def _handle_width_allocate(self, allocation):
+    def _handle_width_allocate(self, width):
         """
-            @param allocation as Gtk.Allocation
+            @param width as int
             @return True if allocation is valid
         """
-        if allocation.width == 1 or self.__width == allocation.width:
+        # FIXME Check this, does it change with GTK4?
+        if width == 1 or self.__width == width:
             return False
-        self.__width = allocation.width
+        self.__width = width
         return True
 
-    def _handle_height_allocate(self, allocation):
+    def _handle_height_allocate(self, height):
         """
-            @param allocation as Gtk.Allocation
+            @param height as int
             @return True if allocation is valid
         """
-        if allocation.height == 1 or self.__height == allocation.height:
+        # FIXME Check this, does it change with GTK4?
+        if height == 1 or self.__height == height:
             return False
-        self.__height = allocation.height
+        self.__height = height
         return True
 
 #######################
 # PRIVATE             #
 #######################
-    def __handle_size_allocate(self, allocation):
+    def __handle_size_allocate(self, width, height):
         """
-            Pass allocation to width/height handler
+            Pass resize to width/height handler
+            @param width as int
+            @param height as int
         """
-        self.__allocation_timeout_id = None
-        self._handle_width_allocate(allocation)
-        self._handle_height_allocate(allocation)
+        self.__resize_timeout_id = None
+        self._handle_width_allocate(width)
+        self._handle_height_allocate(height)
 
-    def __on_size_allocate(self, widget, allocation):
+    def __on_resize(self, widget, width, height):
         """
-            Filter unwanted allocations
+            Filter unwanted values
             @param widget as Gtk.Widget
-            @param allocation as Gtk.Allocation
+            @param widget as int
+            @param height as int
         """
-        if self.__allocation_timeout_id is not None:
-            GLib.source_remove(self.__allocation_timeout_id)
-        self.__allocation_timeout_id = GLib.idle_add(
-            self.__handle_size_allocate, allocation)
+        if self.__resize_timeout_id is not None:
+            GLib.source_remove(self.__resize_timeout_id)
+        self.__resize_timeout_id = GLib.idle_add(
+            self.__handle_size_allocate, width, height)

@@ -27,7 +27,10 @@ class TypeAheadWidget(Gtk.Revealer):
         Gtk.Revealer.__init__(self)
         box = Gtk.Box.new(Gtk.Orientation.HORIZONTAL, 0)
         box.show()
-        box.set_property("margin", MARGIN_SMALL)
+        box.set_margin_start(MARGIN_SMALL)
+        box.set_margin_end(MARGIN_SMALL)
+        box.set_margin_top(MARGIN_SMALL)
+        box.set_margin_bottom(MARGIN_SMALL)
         grid = Gtk.Grid.new()
         grid.show()
         grid.set_hexpand(True)
@@ -39,17 +42,12 @@ class TypeAheadWidget(Gtk.Revealer):
         self.__entry.connect("changed", self.__on_type_ahead_changed)
         self.__entry.set_icon_from_icon_name(Gtk.EntryIconPosition.PRIMARY,
                                              "edit-find-symbolic")
-        self.__next_button = Gtk.Button.new_from_icon_name(
-            "go-down-symbolic", Gtk.IconSize.NORMAL
-        )
+        self.__next_button = Gtk.Button.new_from_icon_name("go-down-symbolic")
         self.__next_button.show()
-        self.__prev_button = Gtk.Button.new_from_icon_name(
-            "go-up-symbolic", Gtk.IconSize.NORMAL
-        )
+        self.__prev_button = Gtk.Button.new_from_icon_name("go-up-symbolic")
         self.__prev_button.show()
         self.__close_button = Gtk.Button.new_from_icon_name(
-            "window-close-symbolic", Gtk.IconSize.NORMAL
-        )
+            "window-close-symbolic")
         self.__close_button.show()
         self.__close_button.set_halign(Gtk.Align.END)
         self.__next_button.connect(
@@ -61,13 +59,14 @@ class TypeAheadWidget(Gtk.Revealer):
         self.__close_button.connect(
             "clicked", lambda x: self.set_reveal_child(False)
         )
-        grid.add(self.__entry)
-        grid.add(self.__prev_button)
-        grid.add(self.__next_button)
-        box.add(grid)
-        box.add(self.__close_button)
-        self.add(box)
-        self.__controller = Gtk.EventControllerKey.new(self.__entry)
+        grid.attach(self.__entry, 0, 0, 1, 1)
+        grid.attach(self.__prev_button, 1, 0, 1, 1)
+        grid.attach(self.__next_button, 2, 0, 1, 1)
+        box.append(grid)
+        box.append(self.__close_button)
+        self.set_child(box)
+        self.__controller = Gtk.EventControllerKey.new()
+        self.__entry.add_controller(self.__controller)
         self.__controller.connect("key-pressed", self.__on_key_pressed)
         self.__controller.connect("key-released", self.__on_key_released)
 

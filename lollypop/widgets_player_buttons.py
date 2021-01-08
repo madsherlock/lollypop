@@ -28,12 +28,10 @@ class PlayButton(Gtk.Button):
             Init Button
         """
         Gtk.Button.__init__(self)
+        # FIXME
         self.__spinner = Gtk.Spinner.new()
         self.__spinner.show()
-        self.__image = Gtk.Image.new_from_icon_name(
-            "media-playback-start-symbolic", Gtk.IconSize.NORMAL)
-        self.__image.show()
-        self.set_image(self.__image)
+        self.set_icon_name("media-playback-start-symbolic")
 
     def set_loading(self, status):
         """
@@ -41,10 +39,10 @@ class PlayButton(Gtk.Button):
             @param status as bool
         """
         if status:
-            self.set_image(self.__spinner)
+            # self.set_image(self.__spinner)
             self.__spinner.start()
         else:
-            self.set_image(self.__image)
+            # self.set_image(self.__image)
             self.__spinner.stop()
 
     @property
@@ -70,23 +68,23 @@ class ButtonsPlayerWidget(Gtk.Box, SignalsHelper):
         Gtk.Box.__init__(self)
         self.__prev_button_timeout_id = None
         self.__prev_button = Gtk.Button.new_from_icon_name(
-            "media-skip-backward-symbolic", Gtk.IconSize.NORMAL)
+            "media-skip-backward-symbolic")
         self.__prev_button.show()
         self.__prev_button.connect("clicked", self.__on_prev_button_clicked)
         self.__play_button = PlayButton()
         self.__play_button.show()
         self.__play_button.connect("clicked", self.__on_play_button_clicked)
         self.__next_button = Gtk.Button.new_from_icon_name(
-            "media-skip-forward-symbolic", Gtk.IconSize.NORMAL)
+            "media-skip-forward-symbolic")
         self.__next_button.show()
         self.__next_button.connect("clicked", self.__on_next_button_clicked)
         self.__play_button.set_sensitive(False)
         self.__prev_button.set_sensitive(False)
         self.__next_button.set_sensitive(False)
         self.get_style_context().add_class("linked")
-        self.pack_start(self.__prev_button, True, True, 0)
-        self.pack_start(self.__play_button, True, True, 0)
-        self.pack_start(self.__next_button, True, True, 0)
+        self.append(self.__prev_button)
+        self.append(self.__play_button)
+        self.append(self.__next_button)
         self.connect("destroy", self.__on_destroy)
         if styles:
             self.__set_styles(self.__prev_button, styles)
@@ -124,12 +122,12 @@ class ButtonsPlayerWidget(Gtk.Box, SignalsHelper):
         def update_button():
             self.__prev_button_timeout_id = None
             self.__prev_button.get_image().set_from_icon_name(
-                "media-seek-backward-symbolic", Gtk.IconSize.NORMAL)
+                "media-seek-backward-symbolic")
 
         if self.__prev_button_timeout_id is not None:
             GLib.source_remove(self.__prev_button_timeout_id)
         self.__prev_button.get_image().set_from_icon_name(
-            "media-skip-backward-symbolic", Gtk.IconSize.NORMAL)
+            "media-skip-backward-symbolic")
         self.__prev_button_timeout_id = GLib.timeout_add(
             App().settings.get_value("previous-threshold").get_int32(),
             update_button)
@@ -180,11 +178,11 @@ class ButtonsPlayerWidget(Gtk.Box, SignalsHelper):
         """
         if player.is_playing:
             self.__play_button.image.set_from_icon_name(
-                "media-playback-pause-symbolic", Gtk.IconSize.NORMAL)
+                "media-playback-pause-symbolic")
             self.__play_button.set_tooltip_text(_("Pause"))
         else:
             self.__play_button.image.set_from_icon_name(
-                "media-playback-start-symbolic", Gtk.IconSize.NORMAL)
+                "media-playback-start-symbolic")
             self.__play_button.set_tooltip_text(_("Play"))
 
     def _on_loading_changed(self, player, status, track):

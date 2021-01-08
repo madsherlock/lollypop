@@ -50,7 +50,7 @@ class GesturesHelper():
         """
             Enable a special header bar hack to block mutter
         """
-        self.__multi_press.connect("pressed", self.__on_multi_pressed)
+        # self.__multi_press.connect("pressed", self.__on_multi_pressed)
 
     @property
     def widget(self):
