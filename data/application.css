@@ -355,21 +355,25 @@ flowboxchild:selected  {
 }
 
 .drag-down {
+/*
     background-image: -gtk-gradient (linear,
                                      left top,
                                      left bottom,
                                      from (@theme_bg_color),
                                      color-stop (0.9, @theme_bg_color),
                                      to (@theme_selected_bg_color));
+*/
 }
 
 .drag-up {
+/*
     background-image: -gtk-gradient (linear,
                                      left top,
                                      left bottom,
                                      from (@theme_selected_bg_color),
                                      color-stop (0.1, @theme_bg_color),
                                      to (@theme_bg_color));
+*/
 }
 
 .left-gradient {
@@ -492,33 +496,33 @@ flowboxchild:selected  {
 
 .fullscreen-close-button {
     opacity: 0.8;
-	box-shadow: none;
-	margin: 5px;
-	background-image: none;
-	border-image-source: none;
+    box-shadow: none;
+    margin: 5px;
+    background-image: none;
+    border-image-source: none;
     background-color: alpha(black, 0.5);
     color: white;
     border: 0px solid transparent;
-    border-radius: 50%
+    border-radius: 50%;
 }
 
 .fullscreen-close-button:hover {
     color: inherit;
     background-color: alpha(black, 0.8);
-  	opacity: 1;
+    opacity: 1;
 }
 
 
 .banner-button {
     opacity: 0.8;
-	box-shadow: none;
-	min-height: 34px;
-	padding-left: 16px;
-	padding-right: 16px;
-	padding-top: 0px;
-	padding-bottom: 0px;
-	background-image: none;
-	border-image-source: none;
+    box-shadow: none;
+    min-height: 34px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    background-image: none;
+    border-image-source: none;
     background-color: alpha(black, 0.5);
     color: white;
     border: 0px solid transparent;
