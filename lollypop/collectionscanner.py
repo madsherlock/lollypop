@@ -293,7 +293,7 @@ class CollectionScanner(GObject.GObject, TagReader):
         """
             Return True if db locked
         """
-        return self.__thread is not None and self.__thread.isAlive()
+        return self.__thread is not None and self.__thread.is_alive()
 
     def stop(self):
         """
